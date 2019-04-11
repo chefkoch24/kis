@@ -6,7 +6,12 @@ public class Start {
 		Roboter r = new Roboter();
 		r.lookLeft();
 		r.lookRight();
-		r.dataOnDisplay();
+		r.fetchData();
+		
+//		int [][] a = new int [3][4];
+//		int [] b = {0,1,2,4};
+//		a[0] = b;
+//		System.out.println(a[0].length);
 	}
 
 }
