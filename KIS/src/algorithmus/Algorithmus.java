@@ -18,6 +18,7 @@ public class Algorithmus {
 	// 11 = geradeaus
 	
 	public void initPopulation() {
+		//TODO: Array of Robots
 		int [] individium = new int[LENGTH];
 		Random rnd = ThreadLocalRandom.current();
 		for (int j = 0; j < population.length; j++){
