@@ -66,6 +66,17 @@ public class Roboter {
 	}
 	
 	/**
+	 * is there a barrier or not
+	 * @return  1 there is one, 0 there is no barrier
+	 */
+	public int isBarrier(float data){
+		if(data <= 0.05){
+			return 1;
+		}
+		return 0;
+	}
+	
+	/**
 	 * head with right turn
 	 * @param angle in degree
 	 */
