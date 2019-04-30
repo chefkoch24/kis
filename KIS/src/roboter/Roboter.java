@@ -1,5 +1,6 @@
 package roboter;
 
+import algorithmus.QLearningAgent;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.NXTRegulatedMotor;
@@ -24,7 +25,6 @@ public class Roboter {
 	private float[] sample = new float[us.sampleSize()];
 	// three measurements, one from front, one from left, one from right
 	private float[][] data = new float[3][sample.length];
-	
 /*
  * 	TODO:
  *  sensor control
