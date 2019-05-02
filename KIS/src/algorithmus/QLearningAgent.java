@@ -8,19 +8,21 @@ public class QLearningAgent {
 	private double alpha = 0.01; // Lernrate (0..1)
 	private double gamma = 0.9; // Bewertungsfaktor (0..1)
 	private double q[][]; // Q-Learning-Array
-	private static final int POSSIBLE_ACTIONS = 8;
-	boolean trained = false; 
+	private static final int POSSIBLE_ACTIONS = 6;
 	/*
 	 * possible actions: STOP = 0, DRIVE_FORWARD = 1, DRIVE_LEFT = 2,
-	 * DRIVE_RIGHT = 3, DRIVE_BACKWARD = 4, LOOK_FORWARD = 5, int LOOK_LEFT = 6,
-	 * LOOK_RIGHT = 7;
+	 * DRIVE_RIGHT = 3, DRIVE_BACKWARD = 4, LOOK = 5
 	 */
+	private static final int BARRIER_LOCATIONS = 8;
+	/*
+	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
+	 */
+	boolean trained = false; 
+	
 
-	// Abhängig von Abstand barriere, ort der barriere, geschwindigkeit,
-	// 3 mögliche Orte der Barriere -> vorne = 0, links = 1, rechts = 2
-	public QLearningAgent(int barrierMax, int placeOfBarrier) {
-		int s = barrierMax + (placeOfBarrier * barrierMax);
-		this.q = new double[s][POSSIBLE_ACTIONS];
+	
+	public QLearningAgent() {
+		this.q = new double[BARRIER_LOCATIONS][POSSIBLE_ACTIONS];
 
 	}
 
@@ -70,9 +72,5 @@ public class QLearningAgent {
 		}
 		return a;
 	}
-	
-	public int calculateState(int barrier, int barrierMax, int placeOfBarrier) {
-		return barrier + (placeOfBarrier * barrierMax);
-}
 
 }

@@ -1,6 +1,5 @@
 package roboter;
 
-import algorithmus.QLearningAgent;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.NXTRegulatedMotor;
@@ -12,10 +11,18 @@ import lejos.utility.Delay;
 
 public class Roboter {
 
+	private final int STOP = 0;
+	private final int DRIVE_FORWARD = 1;
+	private final int DRIVE_LEFT = 2;
+	private final int DRIVE_RIGHT = 3;
+	private final int DRIVE_BACKWARD = 4;
+	private final int LOOK = 5;
+
 	private final int SPEED = 400;
 	private final int SPEED_CURVE = 100;
 	private final int SPEED_LOOK = 100;
-	private final double  LOOK_ANGLE = 90/500;
+	private final double LOOK_ANGLE = 90 / 500;
+	private final double MIN_DISTANCE = 0.05;
 	private NXTRegulatedMotor left = Motor.D;
 	private NXTRegulatedMotor right = Motor.A;
 	private SensorModes distanceSensor = new EV3UltrasonicSensor(SensorPort.S4);
@@ -25,80 +32,104 @@ public class Roboter {
 	private float[] sample = new float[us.sampleSize()];
 	// three measurements, one from front, one from left, one from right
 	private float[][] data = new float[3][sample.length];
-/*
- * 	TODO:
- *  sensor control
- *  simulation-algorithm to learn driving
- *  parser from learning to robot
- */
-	
-	
-	
+	/*
+	 * TODO: sensor control simulation-algorithm to learn driving parser from
+	 * learning to robot
+	 */
+
 	// http://www.lejos.org/ev3/docs/lejos/robotics/SampleProvider.html
-	public void fetchData() {
-		// data from the front		
-		us.fetchSample(sample, 0);
-		data[0] = sample;
-		LCD.drawString("" + sample[0], 1, 1);
-		// data from left side
-		look(90);
-		us.fetchSample(sample, 0);
-		data[1] = sample;
-		LCD.drawString("" + sample[0], 1, 1);
-		// data from right side
-		look(180);
-		us.fetchSample(sample, 0);
-		data[2] = sample;
-		LCD.drawString("" + sample[0], 1, 1);
-		look(90);
+
+	public void doAction(int action) {
+		switch (action) {
+		case STOP:
+			this.stop();
+			break;
+		case DRIVE_FORWARD:
+			this.forward(SPEED);
+			break;
+		case DRIVE_LEFT:
+			this.left(SPEED, SPEED_CURVE);
+			break;
+		case DRIVE_RIGHT:
+			this.right(SPEED, SPEED_CURVE);
+			break;
+		case DRIVE_BACKWARD:
+			this.backward(SPEED);
+			break;
+		case LOOK:
+			this.look();
+			break;
+		}
 	}
 
-	public void lookLeft() {
-		throat.setSpeed(SPEED_LOOK);
-		throat.backward();
-		Delay.msDelay(500);
-		throat.stop();
-		// measure distance
-		fetchData();
-		// back to beginning
-		throat.forward();
-		Delay.msDelay(500);
-	}
-	
 	/**
-	 * is there a barrier or not
-	 * @return  1 there is one, 0 there is no barrier
+	 * measure one distance an write it in data array
+	 * @param pos
 	 */
-	public int isBarrier(float data){
-		if(data <= 0.05){
+	public void fetchData(int pos) {
+		us.fetchSample(sample, 0);
+		data[pos] = sample;
+		LCD.drawString("" + sample[0], 1, 1);
+	}
+
+	/**
+	 * Detect an barrier on with the distance
+	 * 
+	 * @return 0 to 7, depend on which location it is detected
+	 */
+	public int findBarrier() {
+		// front = 1
+		if (sample[0] > MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] > MIN_DISTANCE)
 			return 1;
-		}
+		// left = 2
+		if (sample[0] < MIN_DISTANCE && sample[1] > MIN_DISTANCE && sample[2] > MIN_DISTANCE)
+			return 2;
+		// right = 3
+		if (sample[0] > MIN_DISTANCE && sample[1] > MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+			return 3;
+		// front + left = 4
+		if (sample[0] < MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] > MIN_DISTANCE)
+			return 4;
+		// front + right = 5
+		if (sample[0] > MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+			return 5;
+		// left + right = 6
+		if (sample[0] < MIN_DISTANCE && sample[1] > MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+			return 6;
+		// front + left + right = 7
+		if (sample[0] < MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+			return 7;
 		return 0;
 	}
-	
-	/**
-	 * head with right turn
-	 * @param angle in degree
-	 */
-	public void look(int angle) {
-		throat.setSpeed(SPEED_LOOK);
-		throat.forward();
-		long delay = (long) LOOK_ANGLE*angle;
-		Delay.msDelay(delay);
-		// measure distance
-		fetchData();
-	}
 
-	public void lookRight() {
+	/**
+	 * measure data from left, front and right
+	 */
+	public void look() {
 		throat.setSpeed(SPEED_LOOK);
+		// measure data left
 		throat.forward();
-		Delay.msDelay(500);
-		throat.stop();
-		// measure distance
-		fetchData();
-		// back to beginning
+		long delay = 500;
+		Delay.msDelay(delay);
+		fetchData(0);
+		// measure front
 		throat.backward();
-		Delay.msDelay(500);
+		Delay.msDelay(delay);
+		fetchData(1);
+		// measure data left
+		throat.backward();
+		Delay.msDelay(delay);
+		fetchData(2);
+	}
+	
+	public boolean isBumped() {
+		//TODO: implement bump sensors 
+		return true;
+	}
+	
+	public boolean isGoal() {
+		//TODO: implement color sensors 
+		return true;
 	}
 
 	public void forward(int speed) {
