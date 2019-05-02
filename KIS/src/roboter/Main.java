@@ -8,14 +8,15 @@ public class Main {
 		
 		
 		QLearningAgent agent = new QLearningAgent();
-		Roboter robot = new Roboter();
+		LegoRoboter robot = new LegoRoboter();
 		int counter = 0;
 		int treshold = 10000;
 		while(counter < treshold) {
-			int s = robot.findBarrier();
-			int a = agent.chooseAction(s);
+			robot.look(); // watch and measure data
+			int s = robot.findBarrier(); // find the position of the barrier
+			int a = agent.chooseAction(s); 
 			robot.doAction(a);
-			int sNext = robot.findBarrier();
+			int sNext = robot.findBarrier(); // find next state
 			int r = 0;
 			if(robot.isBumped())
 				r = -1;

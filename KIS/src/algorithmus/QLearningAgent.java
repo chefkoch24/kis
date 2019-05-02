@@ -17,13 +17,15 @@ public class QLearningAgent {
 	/*
 	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
 	 */
-	boolean trained = false; 
-	
-
 	
 	public QLearningAgent() {
 		this.q = new double[BARRIER_LOCATIONS][POSSIBLE_ACTIONS];
-
+		// initalize q
+		for(int i = 0; i < this.q.length; i++) {
+			for(int j=0; j < this.q[i].length; j++) {
+				this.q[i][j] = Math.random();
+			}
+		}
 	}
 
 	/**
@@ -64,7 +66,7 @@ public class QLearningAgent {
 	 */
 	public int chooseAction(int s) {
 		int a = 0;
-		if (Math.random() < this.epsilon && this.trained == false) {
+		if (Math.random() < this.epsilon) {
 			// Bound = 8, because we want 7 to be inclusive
 			a = ThreadLocalRandom.current().nextInt(0, 8);
 		} else {
