@@ -4,7 +4,11 @@ public class Start {
 
 	public static void main(String[] args) {
 		LegoRoboter robot = new LegoRoboter();
-		robot.isBumped();
+		while(!robot.isBumped()){
+			System.out.println("not bumped");
+		}
+		System.out.println("bumped");
+		
 	}
 
 }
