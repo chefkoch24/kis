@@ -4,12 +4,13 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.*;
 import lejos.utility.Delay;
 
-public class LegoRoboter implements Roboter{
+public class LegoRoboter implements Roboter {
 
 	private final int STOP = 0;
 	private final int DRIVE_FORWARD = 1;
@@ -26,6 +27,10 @@ public class LegoRoboter implements Roboter{
 	private NXTRegulatedMotor left = Motor.D;
 	private NXTRegulatedMotor right = Motor.A;
 	private SensorModes distanceSensor = new EV3UltrasonicSensor(SensorPort.S4);
+	private SensorModes touchSensor1 = new EV3TouchSensor(SensorPort.S1);
+	private SampleProvider touch1 = touchSensor1.getMode("Touch");
+	private SensorModes touchSensor2 = new EV3TouchSensor(SensorPort.S2);
+	private SampleProvider touch2 = touchSensor2.getMode("Touch");
 	private SampleProvider us = distanceSensor.getMode("Distance");
 	private NXTRegulatedMotor throat = Motor.B;
 	// one measurement
@@ -64,6 +69,7 @@ public class LegoRoboter implements Roboter{
 
 	/**
 	 * measure one distance an write it in data array
+	 * 
 	 * @param pos
 	 */
 	@Override
@@ -124,16 +130,23 @@ public class LegoRoboter implements Roboter{
 		Delay.msDelay(delay);
 		fetchData(2);
 	}
-	
+
 	@Override
 	public boolean isBumped() {
-		//TODO: implement bump sensors 
+		// Abfrage Tastsensor
+		float touched[] = new float[2];
+		touch1.fetchSample(touched, 0);
+		touch2.fetchSample(touched, 1);
+		if(touched[0] == 0 && touched[1] == 0) {
+			return false;
+		}
+		LCD.drawString("bumped: " + touched[0] + "," + touched[1], 0, 1);
 		return true;
 	}
-	
+
 	@Override
 	public boolean isGoal() {
-		//TODO: implement color sensors 
+		// TODO: implement color sensors
 		return true;
 	}
 
@@ -168,6 +181,7 @@ public class LegoRoboter implements Roboter{
 		left.backward();
 		right.backward();
 	}
+
 	@Override
 	public void stop() {
 		left.stop();
