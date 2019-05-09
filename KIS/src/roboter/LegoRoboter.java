@@ -35,6 +35,7 @@ public class LegoRoboter implements Roboter {
 	private NXTRegulatedMotor throat = Motor.B;
 	// one measurement
 	private float[] sample = new float[us.sampleSize()];
+//	private float[] sample = new float[3];
 	// three measurements, one from front, one from left, one from right
 	private float[][] data = new float[3][sample.length];
 	/*
@@ -74,7 +75,7 @@ public class LegoRoboter implements Roboter {
 	 */
 	@Override
 	public void fetchData(int pos) {
-		us.fetchSample(sample, 0);
+//		us.fetchSample(sample, 0);
 		data[pos] = sample;
 		LCD.drawString("" + sample[0], 1, 1);
 	}
