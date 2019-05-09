@@ -14,15 +14,12 @@ public class Start {
 	public static void main(String[] args) {
 		LegoRoboter robot = new LegoRoboter();
 //		TODO: forward = backward
-//		left = right
+		
 		robot.lookLeft();
 		robot.lookRight();
 		robot.lookRight();
 		robot.lookLeft();
-		robot.lookLeft();
-		robot.lookRight();
-		robot.lookRight();
-		robot.lookLeft();
+		
 		System.out.println("Finished");
 		Button.waitForAnyPress();
 		/*while(!robot.isBumped()){

@@ -114,16 +114,17 @@ public class LegoRoboter implements Roboter {
 	
 	public void lookRight(){
 		throat.setSpeed(SPEED_LOOK);
-		// measure data right
 		throat.rotate(90);
+		
+		//measure and prints right distance
 		fetchData(2);
 	}
 	
 	public void lookLeft(){
 		throat.setSpeed(SPEED_LOOK);
-		// measure data right
-		//throat.backward();
 		throat.rotate(-90);
+		
+		//measure and prints left distance
 		fetchData(0);
 	}
 
