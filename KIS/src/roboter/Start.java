@@ -8,7 +8,7 @@ public class Start {
 	 * 4 - 8 Seiten Wissenschaftliche Ausarbeitung
 	 * Mit Abstract, Einleitung, Auswertung der Versuche, Diskussion, Ausblick
 	 * Mögliche ähnliche wissenschaftliche Arbeiten, die sich mit diesem Thema 
-	 * beschäftigt hat.
+	 * beschäftigt haben.
 	 * @param args
 	 */
 	public static void main(String[] args) {
