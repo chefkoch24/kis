@@ -1,5 +1,6 @@
 package roboter;
 
+import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.NXTRegulatedMotor;
@@ -26,10 +27,10 @@ public class LegoRoboter implements Roboter {
 	private final double MIN_DISTANCE = 0.05;
 	private NXTRegulatedMotor left = Motor.D;
 	private NXTRegulatedMotor right = Motor.A;
-	private SensorModes distanceSensor = new EV3UltrasonicSensor(SensorPort.S4);
+	private SensorModes distanceSensor = new EV3UltrasonicSensor(SensorPort.S3);
 	private SensorModes touchSensor1 = new EV3TouchSensor(SensorPort.S1);
 	private SampleProvider touch1 = touchSensor1.getMode("Touch");
-	private SensorModes touchSensor2 = new EV3TouchSensor(SensorPort.S2);
+	private SensorModes touchSensor2 = new EV3TouchSensor(SensorPort.S4);
 	private SampleProvider touch2 = touchSensor2.getMode("Touch");
 	private SampleProvider us = distanceSensor.getMode("Distance");
 	private NXTRegulatedMotor throat = Motor.B;
@@ -75,9 +76,9 @@ public class LegoRoboter implements Roboter {
 	 */
 	@Override
 	public void fetchData(int pos) {
-//		us.fetchSample(sample, 0);
+		us.fetchSample(sample, 0);
 		data[pos] = sample;
-		LCD.drawString("" + sample[0], 1, 1);
+		System.out.print(sample[0]);
 	}
 
 	/**
@@ -110,26 +111,32 @@ public class LegoRoboter implements Roboter {
 			return 7;
 		return 0;
 	}
+	
+	public void lookRight(){
+		throat.setSpeed(SPEED_LOOK);
+		// measure data right
+		throat.rotate(90);
+		fetchData(2);
+	}
+	
+	public void lookLeft(){
+		throat.setSpeed(SPEED_LOOK);
+		// measure data right
+		//throat.backward();
+		throat.rotate(-90);
+		fetchData(0);
+	}
 
 	/**
 	 * measure data from left, front and right
 	 */
 	@Override
 	public void look() {
-		throat.setSpeed(SPEED_LOOK);
-		// measure data left
-		throat.forward();
-		long delay = 500;
-		Delay.msDelay(delay);
-		fetchData(0);
-		// measure front
-		throat.backward();
-		Delay.msDelay(delay);
+		lookLeft();
+		throat.rotate(-90);
 		fetchData(1);
-		// measure data left
-		throat.backward();
-		Delay.msDelay(delay);
-		fetchData(2);
+		lookRight();
+		throat.rotate(90);
 	}
 
 	@Override
