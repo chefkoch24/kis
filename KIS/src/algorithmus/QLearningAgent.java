@@ -37,8 +37,7 @@ public class QLearningAgent {
 	 * @param r: Belohnung
 	 */
 	public void learn(int s, int s_next, int a, double r) {
-		int aIndex = a + 1;
-		this.q[s][aIndex] += this.alpha * (r + this.gamma * (this.q[s_next][actionWithBestRating(s_next)]) - q[s][aIndex]);
+		this.q[s][a] += this.alpha * (r + this.gamma * (this.q[s_next][actionWithBestRating(s_next)]) - q[s][a]);
 
 	}
 
