@@ -1,5 +1,7 @@
 package roboter;
 
+import java.util.concurrent.TimeUnit;
+
 import lejos.hardware.Button;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
@@ -20,11 +22,11 @@ public class LegoRoboter implements Roboter {
 	private final int DRIVE_BACKWARD = 4;
 	private final int LOOK = 5;
 
-	private final int SPEED = 400;
-	private final int SPEED_CURVE = 100;
+	private final int SPEED = 100;
+	private final int SPEED_CURVE = 0;
 	private final int SPEED_LOOK = 100;
 
-	private final double MIN_DISTANCE = 0.05;
+	private final double MIN_DISTANCE = 0.1;
 	private NXTRegulatedMotor left = Motor.D;
 	private NXTRegulatedMotor right = Motor.A;
 	private SensorModes distanceSensor = new EV3UltrasonicSensor(SensorPort.S3);
@@ -39,6 +41,7 @@ public class LegoRoboter implements Roboter {
 //	private float[] sample = new float[3];
 	// three measurements, one from front, one from left, one from right
 	private float[][] data = new float[3][sample.length];
+	private float touched[] = new float[2];
 	/*
 	 * TODO: sensor control simulation-algorithm to learn driving parser from
 	 * learning to robot
@@ -63,9 +66,6 @@ public class LegoRoboter implements Roboter {
 		case DRIVE_BACKWARD:
 			this.backward();
 			break;
-		case LOOK:
-			this.look();
-			break;
 		}
 	}
 
@@ -79,6 +79,8 @@ public class LegoRoboter implements Roboter {
 		us.fetchSample(sample, 0);
 		data[pos] = sample;
 		System.out.print(sample[0]);
+		touch1.fetchSample(this.touched, 0);
+		touch2.fetchSample(this.touched, 1);
 	}
 
 	/**
@@ -115,18 +117,19 @@ public class LegoRoboter implements Roboter {
 	public void lookRight(){
 		throat.setSpeed(SPEED_LOOK);
 		throat.rotate(90);
-		
 		//measure and prints right distance
 		fetchData(2);
+		throat.rotate(-90);
 	}
 	
 	public void lookLeft(){
 		throat.setSpeed(SPEED_LOOK);
 		throat.rotate(-90);
-		
 		//measure and prints left distance
 		fetchData(0);
+		throat.rotate(90);
 	}
+
 
 	/**
 	 * measure data from left, front and right
@@ -134,18 +137,14 @@ public class LegoRoboter implements Roboter {
 	@Override
 	public void look() {
 		lookLeft();
-		throat.rotate(-90);
+		// data from front
 		fetchData(1);
 		lookRight();
-		throat.rotate(90);
 	}
 
 	@Override
 	public boolean isBumped() {
 		// Abfrage Tastsensor
-		float touched[] = new float[2];
-		touch1.fetchSample(touched, 0);
-		touch2.fetchSample(touched, 1);
 		if(touched[0] == 0 && touched[1] == 0) {
 			return false;
 		}
@@ -163,32 +162,49 @@ public class LegoRoboter implements Roboter {
 	public void forward() {
 		left.setSpeed(SPEED);
 		right.setSpeed(SPEED);
-		left.backward();
-		right.backward();
+		left.forward();
+		right.forward();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Automatisch generierter Erfassungsblock
+			e.printStackTrace();
+		}
+		left.setSpeed(0);
+		right.setSpeed(0);
+		//stop();
 	}
 
 	@Override
 	public void backward() {
 		left.setSpeed(SPEED);
 		right.setSpeed(SPEED);
-		left.forward();
-		left.forward();
-	}
-
-	@Override
-	public void left() {
-		left.setSpeed(SPEED);
-		right.setSpeed(SPEED_CURVE);
 		left.backward();
-		right.backward();
+		left.backward();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Automatisch generierter Erfassungsblock
+			e.printStackTrace();
+		}
+		left.setSpeed(0);
+		right.setSpeed(0);
 	}
 
 	@Override
 	public void right() {
+		left.setSpeed(SPEED);
+		right.setSpeed(SPEED_CURVE);
+		left.rotate(360);
+		right.rotate(-360);
+	}
+
+	@Override
+	public void left() {
 		left.setSpeed(SPEED_CURVE);
 		right.setSpeed(SPEED);
-		left.backward();
-		right.backward();
+		left.rotate(-360);
+		right.rotate(360);
 	}
 
 	@Override

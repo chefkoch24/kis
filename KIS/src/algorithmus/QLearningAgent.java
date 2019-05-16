@@ -8,10 +8,10 @@ public class QLearningAgent {
 	private double alpha = 0.01; // Lernrate (0..1)
 	private double gamma = 0.9; // Bewertungsfaktor (0..1)
 	private double q[][]; // Q-Learning-Array
-	private static final int POSSIBLE_ACTIONS = 6;
+	private static final int POSSIBLE_ACTIONS = 5;
 	/*
 	 * possible actions: STOP = 0, DRIVE_FORWARD = 1, DRIVE_LEFT = 2,
-	 * DRIVE_RIGHT = 3, DRIVE_BACKWARD = 4, LOOK = 5
+	 * DRIVE_RIGHT = 3, DRIVE_BACKWARD = 4, LOOK = 5 -> aktuell nicht
 	 */
 	private static final int BARRIER_LOCATIONS = 8;
 	/*
@@ -67,8 +67,8 @@ public class QLearningAgent {
 	public int chooseAction(int s) {
 		int a = 0;
 		if (Math.random() < this.epsilon) {
-			// Bound = 8, because we want 7 to be inclusive
-			a = ThreadLocalRandom.current().nextInt(0, 8);
+			// + 1 to have the last inclusive
+			a = ThreadLocalRandom.current().nextInt(0, POSSIBLE_ACTIONS+1);
 		} else {
 			a = actionWithBestRating(s);
 		}
