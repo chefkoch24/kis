@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import labyrinth.Labyrinth;
 
 public class RoboSim implements Roboter {
+	private static int numberOfRobots = 0;
+	
+	private final String roboName;
 
 	private float[] data = new float[3];
 	private final int STOP = 0;
@@ -17,7 +20,20 @@ public class RoboSim implements Roboter {
 	int posx = 0;
 	int posy = 0;
 	private int[][] maze;
+	
+	// Simulationsmaße
+	private final int simRobotYSize = 20;
+	private final int simRobotXSize = 15;
+	private final int simRobotHeadUltrasonicWidth = 5;
+	
+	// Darstellung in Simulation (für Javakonsole)
+	private final char simRobotBodyImaging = 'O';
+	private final char simRobotHeadImaging = 'H';
 
+	RoboSim(){
+		this.roboName = "Robo" + (++numberOfRobots);
+	}
+	
 	@Override
 	public void doAction(int action) {
 		switch (action) {

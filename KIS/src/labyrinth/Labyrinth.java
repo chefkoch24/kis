@@ -6,10 +6,22 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Labyrinth {
-	private String mazeFile;
+	private String mazeFilePath;
+	private String maze;
+	
+	// Arraywerte für Simulation
+	private final int arrayVoidValue = 0;
+	private final int arrayWallValue = 1;
+	private final int arrayRoboBodyValue = 2;
+	private final int arrayRoboHeadValue = 3;
+	
+	private int[][] numericMaze; 
 
 	public Labyrinth(String mazeFile) {
-		setMazeFile(mazeFile); //sets private variable: mazeFile
+		setMazeFile(mazeFile);
+		updateMaze();
+		mazeToArray();
+		
 		
 //		 BufferedReader br;
 //		try {
@@ -30,10 +42,16 @@ public class Labyrinth {
 //		}
 	}
 
-	public void printMazeCommandLine() {
+	public void mazeToArray(){
+		System.out.println(this.mazeFilePath);		
+		
+		
+	}
+	
+	public void updateMaze() {
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new FileReader(this.mazeFile));
+			br = new BufferedReader(new FileReader(this.mazeFilePath));
 			
 			StringBuilder sb = new StringBuilder();
 			String line = "";
@@ -42,7 +60,8 @@ public class Labyrinth {
 				sb.append(System.lineSeparator());
 			}
 			br.close();
-			System.out.println(sb.toString());
+			
+			this.maze = sb.toString();
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
@@ -52,7 +71,7 @@ public class Labyrinth {
 		FileReader fr;
 		try {
 			fr = new FileReader(newMazeFile);
-			this.mazeFile = newMazeFile;
+			this.mazeFilePath = newMazeFile;
 			fr.close();
 		} catch(FileNotFoundException e){
 			System.err.println("Datei: " + newMazeFile + " nicht gefunden!");
@@ -61,10 +80,15 @@ public class Labyrinth {
 			e.printStackTrace();
 		}
 	}
+	
+	public String getMaze() {
+		return this.maze;
+	}
 
 	public static void main(String[] args) {
-		Labyrinth l = new Labyrinth("./src/labyrinth/maze2.txt");
-		l.printMazeCommandLine();
+		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
+		// TODO warum Pfad, nicht Labyrinth selbst?
+		l.getMaze();
 	}
 
 }
