@@ -212,7 +212,8 @@ public class Labyrinth {
 		// Roboter in Labyrinth setzen
 		List<Integer> possiblePositionsAroundPuttingPosition = new ArrayList<>();
 		possiblePositionsAroundPuttingPosition.add(puttingPosition);
-		int robotSmallerDirection = this.robotXDimension < this.robotYDimension ? this.robotXDimension : this.robotYDimension;
+		int robotSmallerDirection = this.robotXDimension < this.robotYDimension ? this.robotXDimension
+				: this.robotYDimension;
 		boolean wall = false;
 
 		// Nord und Süd (Horizontal ausrichten)
@@ -221,7 +222,8 @@ public class Labyrinth {
 			for (int x = 1; !wall && x < robotSmallerDirection; x++) {
 				if (this.numericMaze[puttingPosition - x] == this.arrayVoidValue) {
 					possiblePositionsAroundPuttingPosition.add(puttingPosition - x);
-					System.out.println("links: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+					System.out.println("links: " + possiblePositionsAroundPuttingPosition
+							.get(possiblePositionsAroundPuttingPosition.size() - 1));
 				} else {
 					wall = true;
 				}
@@ -229,10 +231,12 @@ public class Labyrinth {
 			// Prüfe rechte Felder
 			if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
 				wall = false;
-				for (int x = 1; !wall && x < robotSmallerDirection && possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
+				for (int x = 1; !wall && x < robotSmallerDirection
+						&& possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
 					if (this.numericMaze[puttingPosition + x] == this.arrayVoidValue) {
 						possiblePositionsAroundPuttingPosition.add(puttingPosition + x);
-						System.out.println("rechts: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+						System.out.println("rechts: " + possiblePositionsAroundPuttingPosition
+								.get(possiblePositionsAroundPuttingPosition.size() - 1));
 					} else {
 						wall = true;
 					}
@@ -240,22 +244,25 @@ public class Labyrinth {
 			}
 		} else { // Ost und West (Vertikal aufstellen)
 			// Prüfe oben
-			for(int x = 1; !wall && x < robotSmallerDirection; x++) {
-				if(this.numericMaze[puttingPosition - (x * this.mazeX)] == this.arrayVoidValue) {
+			for (int x = 1; !wall && x < robotSmallerDirection; x++) {
+				if (this.numericMaze[puttingPosition - (x * this.mazeX)] == this.arrayVoidValue) {
 					possiblePositionsAroundPuttingPosition.add(puttingPosition - (x * this.mazeX));
-					System.out.println("oben: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+					System.out.println("oben: " + possiblePositionsAroundPuttingPosition
+							.get(possiblePositionsAroundPuttingPosition.size() - 1));
 				} else {
 					wall = true;
 				}
 			}
-			
+
 			// Prüfe unten
-			if(possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+			if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
 				wall = false;
-				for(int x = 1; !wall && x < robotSmallerDirection && possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
-					if(this.numericMaze[puttingPosition + (x * this.mazeX)] == this.arrayVoidValue) {
+				for (int x = 1; !wall && x < robotSmallerDirection
+						&& possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
+					if (this.numericMaze[puttingPosition + (x * this.mazeX)] == this.arrayVoidValue) {
 						possiblePositionsAroundPuttingPosition.add(puttingPosition + (x * this.mazeX));
-						System.out.println("unten: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+						System.out.println("unten: " + possiblePositionsAroundPuttingPosition
+								.get(possiblePositionsAroundPuttingPosition.size() - 1));
 					} else {
 						wall = true;
 					}
@@ -266,38 +273,109 @@ public class Labyrinth {
 		if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
 			throw new IllegalArgumentException("Setzen des Roboters auf diese Position nicht möglich");
 		}
-		
+
 		// Bestimme weitere Felder
-		int biggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension : this.robotYDimension;
-		
+		int roboBiggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension
+				: this.robotYDimension;
+
 		// Nord und Süd (Vertikal suchen)
-		if(headDirection == 0 || headDirection == 2) {
+		if (headDirection == 0 || headDirection == 2) {
 			wall = false;
 			int i = 0;
 			// Nach oben
-			for(int y = 1; !wall && y < biggerDirection; y++) {
-				if(this.numericMaze[puttingPosition - (y * this.mazeX)] == this.arrayVoidValue) {
+			for (int y = 1; !wall && y < roboBiggerDirection; y++) {
+				if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(y)
+						- (y * this.mazeX)] == this.arrayVoidValue) {
 					i++;
-					if(i == 3) {
-						// Eine mögliche Reihe gefunden
-						i = 0;
+					possiblePositionsAroundPuttingPosition.add(puttingPosition - (y * this.mazeX)); // TODO puttingPosition
+																									// in possible...
+																									// tauschen?
+					for (int x = 1; !wall && x < robotSmallerDirection; x++) {
+						if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(x)
+								- (y * this.mazeX)] == this.arrayVoidValue) {
+							i++;
+							// Mögliche Reihe gefunden
+							if (i == 3) {
+								i = 0;
+							}
+							possiblePositionsAroundPuttingPosition
+									.add(possiblePositionsAroundPuttingPosition.get(x) - (y * this.mazeX));
+						} else {
+							wall = true;
+							while (i > 0) {
+								possiblePositionsAroundPuttingPosition
+										.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+								i--;
+							}
+						}
 					}
-					possiblePositionsAroundPuttingPosition.add(puttingPosition - (y * this.mazeX));
 				} else {
 					wall = true;
-					while(i > 0) {
-						possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+					while (i > 0) {
+						possiblePositionsAroundPuttingPosition
+								.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 						i--;
 					}
 				}
 			}
+
+			// Nach unten
+			if (possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension) {
+				wall = false;
+				i = 0;
+
+				for (int y = 1; !wall && y < roboBiggerDirection && possiblePositionsAroundPuttingPosition
+						.size() < this.robotXDimension * this.robotYDimension; y++) {
+					if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(0)
+							+ (y * this.mazeX)] == this.arrayVoidValue) {
+						i++;
+						possiblePositionsAroundPuttingPosition
+								.add(possiblePositionsAroundPuttingPosition.get(0) + (y * this.mazeX));
+						for (int x = 1; !wall && x < robotSmallerDirection; x++) {
+							if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(x)
+									+ (y * this.mazeX)] == this.arrayVoidValue) {
+								i++;
+								possiblePositionsAroundPuttingPosition
+										.add(possiblePositionsAroundPuttingPosition.get(x) + (y * this.mazeX));
+							} else {
+								wall = true;
+								while (i > 0) {
+									possiblePositionsAroundPuttingPosition
+											.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+									i--;
+								}
+							}
+						}
+					} else {
+						wall = true;
+						while (i > 0) {
+							possiblePositionsAroundPuttingPosition
+									.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+							i--;
+						}
+					}
+				}
+			}
+
+			if (possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension) {
+				throw new IllegalArgumentException("Roboter konnte nicht gesetzt werden");
+			}
+
 		} else { // Ost und West (Horizontal suchen)
-			
+
 		}
-		
+
 		// Setze Roboter
+		int index = 0;
 		for (int i : possiblePositionsAroundPuttingPosition) {
-			this.numericMaze[i] = this.arrayRoboBodyValue;
+			if (index == 1 && headDirection == 0) {
+				this.numericMaze[i] = this.arrayRoboHeadValue;
+			} else if(index == possiblePositionsAroundPuttingPosition.size() - 2 && headDirection == 2) {
+				this.numericMaze[i] = this.arrayRoboHeadValue;
+			} else {
+				this.numericMaze[i] = this.arrayRoboBodyValue;
+			}
+			index++;
 		}
 
 	}
@@ -328,7 +406,7 @@ public class Labyrinth {
 		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
 		l.printArrayMaze();
 		l.printStringMaze();
-		l.puttingRobotIntoTheMaze(414,0);
+		l.puttingRobotIntoTheMaze(458, 2); // TODO Headbugg bei 458,2
 		l.robotPositionMatrix();
 		l.printStringMaze();
 	}
