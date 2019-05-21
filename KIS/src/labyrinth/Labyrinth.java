@@ -36,6 +36,9 @@ public class Labyrinth {
 	private final int robotXDimension = 4;
 	private final int robotYDimension = 3;
 	private final int robotHeadDimension = 1; // Kopf-Schulterproportion passt nicht ganz
+	
+	private final int robotSmallerDirection = this.robotXDimension < this.robotYDimension ? this.robotXDimension : this.robotYDimension;
+	private final int robotBiggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension : this.robotYDimension;
 
 	public Labyrinth(String mazeFile) {
 		BufferedReader br;
@@ -364,7 +367,75 @@ public class Labyrinth {
 			}
 
 		} else { // Ost und West (Horizontal suchen)
-
+			wall = false;
+			int i = 0;
+			
+			// Links nach freien Plätzen suchen
+			for(int x = 1; !wall && x < this.robotBiggerDirection; x++) {
+				if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) - x] == this.arrayVoidValue) {
+					i++;
+					possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) - x);
+					System.out.println("x: " + x + " v: " + (possiblePositionsAroundPuttingPosition.get(0) - x));
+					for(int y = 1; !wall && y < this.robotSmallerDirection; y++) {
+						if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(y) - x] == this.arrayVoidValue) {
+							i++;
+							possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(y) - x);
+							System.out.println("y: " + y + "v: " + (possiblePositionsAroundPuttingPosition.get(y) - x));
+							// Passende 3er Gruppe gefunden
+							if(i == 3) {
+								i = 0;
+							}
+						} else {
+							wall = true;
+							while(i > 0) {
+								possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+								i--;
+							}
+						}
+					}
+				} else {
+					wall = true;
+					while(i > 0) {
+						possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+						i--;
+					}
+				}
+			}
+			
+			// TODO Nach rehcts Bugged noch
+			if(possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension) {
+				// Rechts nach freien Plätzen suchen
+				wall = false;
+				i = 0;
+				for(int x = 1; !wall && x < this.robotBiggerDirection && possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension; x++) {
+					if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) + x] == this.arrayVoidValue) {
+						i++;
+						possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) - x);
+						for(int y = 1; !wall && y < this.robotBiggerDirection; y++) {
+							if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(y) + x] == this.arrayVoidValue) {
+								i++;
+								possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(y) + x);
+								// Mögliche 3er Gruppe gefunden
+								if(i == 3) {
+									i = 0;
+								}
+							} else {
+								wall = true;
+								while(i > 0) {
+									possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+									i--;
+								}
+							}
+						}
+					} else {
+						wall = true;
+						while(i > 0) {
+							possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+							i--;
+						}
+					}
+				}
+			}
 		}
 
 		// Setze Roboter
@@ -374,8 +445,6 @@ public class Labyrinth {
 
 		// Sortieren um leichter zu positionieren
 		Collections.sort(possiblePositionsAroundPuttingPosition);
-		// int robotSmallerDimension = this.robotXDimension < this.robotYDimension ? this.robotXDimension : this.robotYDimension;
-		// int robotBiggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension : this.robotYDimension;
 		int headPosition = 0;
 		switch (headDirection) {
 		case 0:
@@ -416,7 +485,7 @@ public class Labyrinth {
 		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
 		l.printArrayMaze();
 		l.printStringMaze();
-		l.puttingRobotIntoTheMaze();
+		l.puttingRobotIntoTheMaze(433, 1);
 		l.robotPositionMatrix();
 		l.printStringMaze();
 	}
