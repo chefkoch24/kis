@@ -102,11 +102,21 @@ public class LegoRoboter implements Roboter {
 	public int findBarrier() {
 		printData();
 		// front = 1
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE)
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE){
+			// front + bumped
+			if(isBumped()){
+				return 8;
+			}
 			return 1;
+		}
 		// left = 2
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE){
+			if(isBumped()){
+				return 9;
+			}
 			return 2;
+		}
+			
 		// right = 3
 		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
 			return 3;
@@ -155,6 +165,8 @@ public class LegoRoboter implements Roboter {
 
 	@Override
 	public boolean isBumped() {
+		touch1.fetchSample(this.touched, 0);
+		touch2.fetchSample(this.touched, 1);
 		// Abfrage Tastsensor
 		if(touched[0] == 0 && touched[1] == 0) {
 			return false;
@@ -191,7 +203,7 @@ public class LegoRoboter implements Roboter {
 		left.setSpeed(SPEED);
 		right.setSpeed(SPEED);
 		left.backward();
-		left.backward();
+		right.backward();
 		try {
 			TimeUnit.SECONDS.sleep(3);
 		} catch (InterruptedException e) {
@@ -205,16 +217,12 @@ public class LegoRoboter implements Roboter {
 	@Override
 	public void right() {
 		left.setSpeed(SPEED);
-		right.setSpeed(SPEED_CURVE);
 		left.rotate(360);
-		right.rotate(-360);
 	}
 
 	@Override
 	public void left() {
-		left.setSpeed(SPEED_CURVE);
 		right.setSpeed(SPEED);
-		left.rotate(-360);
 		right.rotate(360);
 	}
 

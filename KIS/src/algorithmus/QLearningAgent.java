@@ -14,16 +14,20 @@ public class QLearningAgent {
 	 * DRIVE_RIGHT = 3, DRIVE_BACKWARD = 4, LOOK = 5 -> aktuell nicht
 	 */
 	private static final int BARRIER_LOCATIONS = 8;
+	// is the robot bumped or not? 1 state for the barrier bumped and one state for the location not bumped
+	// dhort of no barrier
+	private static final int BUMPED = 7;
 	/*
 	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
 	 */
 	
 	public QLearningAgent() {
-		this.q = new double[BARRIER_LOCATIONS][POSSIBLE_ACTIONS];
+		this.q = new double[BARRIER_LOCATIONS*BUMPED][POSSIBLE_ACTIONS];
 		// initalize q
 		for(int i = 0; i < this.q.length; i++) {
 			for(int j=0; j < this.q[i].length; j++) {
-				this.q[i][j] = Math.random();
+				// values between 0 and 0.1 without 0.1
+				this.q[i][j] = Math.random() / 10;
 			}
 		}
 	}
@@ -67,7 +71,7 @@ public class QLearningAgent {
 		int a = 0;
 		if (Math.random() < this.epsilon) {
 			// + 1 to have the last inclusive
-			a = ThreadLocalRandom.current().nextInt(0, POSSIBLE_ACTIONS+1);
+			a = ThreadLocalRandom.current().nextInt(0, POSSIBLE_ACTIONS);
 		} else {
 			a = actionWithBestRating(s);
 		}
