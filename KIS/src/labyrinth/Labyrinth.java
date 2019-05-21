@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -287,7 +288,8 @@ public class Labyrinth {
 				if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(y)
 						- (y * this.mazeX)] == this.arrayVoidValue) {
 					i++;
-					possiblePositionsAroundPuttingPosition.add(puttingPosition - (y * this.mazeX)); // TODO puttingPosition
+					possiblePositionsAroundPuttingPosition.add(puttingPosition - (y * this.mazeX)); // TODO
+																									// puttingPosition
 																									// in possible...
 																									// tauschen?
 					for (int x = 1; !wall && x < robotSmallerDirection; x++) {
@@ -366,17 +368,25 @@ public class Labyrinth {
 		}
 
 		// Setze Roboter
-		int index = 0;
 		for (int i : possiblePositionsAroundPuttingPosition) {
-			if (index == 1 && headDirection == 0) {
-				this.numericMaze[i] = this.arrayRoboHeadValue;
-			} else if(index == possiblePositionsAroundPuttingPosition.size() - 2 && headDirection == 2) {
-				this.numericMaze[i] = this.arrayRoboHeadValue;
-			} else {
-				this.numericMaze[i] = this.arrayRoboBodyValue;
-			}
-			index++;
+			this.numericMaze[i] = this.arrayRoboBodyValue;
 		}
+
+		// Sortieren um leichter zu positionieren
+		Collections.sort(possiblePositionsAroundPuttingPosition);
+		// int robotSmallerDimension = this.robotXDimension < this.robotYDimension ? this.robotXDimension : this.robotYDimension;
+		// int robotBiggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension : this.robotYDimension;
+		int headPosition = 0;
+		switch (headDirection) {
+		case 0:
+			headPosition = possiblePositionsAroundPuttingPosition.get(1);
+			break;
+		case 2:
+			headPosition = possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 2);
+			break;
+		}
+		
+		this.numericMaze[headPosition] = this.arrayRoboHeadValue;
 
 	}
 
@@ -406,7 +416,7 @@ public class Labyrinth {
 		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
 		l.printArrayMaze();
 		l.printStringMaze();
-		l.puttingRobotIntoTheMaze(458, 2); // TODO Headbugg bei 458,2
+		l.puttingRobotIntoTheMaze();
 		l.robotPositionMatrix();
 		l.printStringMaze();
 	}
