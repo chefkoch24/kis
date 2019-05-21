@@ -25,7 +25,9 @@ public class LegoRoboter implements Roboter {
 	private final int SPEED = 100;
 	private final int SPEED_CURVE = 0;
 	private final int SPEED_LOOK = 100;
-
+	private final int LEFT = 0;
+	private final int FRONT = 1;
+	private final int RIGHT = 2;
 	private final double MIN_DISTANCE = 0.1;
 	private NXTRegulatedMotor left = Motor.D;
 	private NXTRegulatedMotor right = Motor.A;
@@ -36,11 +38,12 @@ public class LegoRoboter implements Roboter {
 	private SampleProvider touch2 = touchSensor2.getMode("Touch");
 	private SampleProvider us = distanceSensor.getMode("Distance");
 	private NXTRegulatedMotor throat = Motor.B;
+	
 	// one measurement
-	private float[] sample = new float[us.sampleSize()];
+	private float[] sample = new float[3];
 //	private float[] sample = new float[3];
 	// three measurements, one from front, one from left, one from right
-	private float[][] data = new float[3][sample.length];
+//	private float[][] data = new float[3][sample.length];
 	private float touched[] = new float[2];
 	/*
 	 * TODO: sensor control simulation-algorithm to learn driving parser from
@@ -68,6 +71,13 @@ public class LegoRoboter implements Roboter {
 			break;
 		}
 	}
+	
+	private void printData(){
+		for(int i = 0; i < sample.length; i++){
+			System.out.print(sample[i] + ", ");
+		}
+		System.out.println();
+	}
 
 	/**
 	 * measure one distance an write it in data array
@@ -76,9 +86,9 @@ public class LegoRoboter implements Roboter {
 	 */
 	@Override
 	public void fetchData(int pos) {
-		us.fetchSample(sample, 0);
-		data[pos] = sample;
-		System.out.print(sample[0]);
+		us.fetchSample(sample, pos);
+//		data[pos] = sample;
+//		System.out.print(sample[0]);
 		touch1.fetchSample(this.touched, 0);
 		touch2.fetchSample(this.touched, 1);
 	}
@@ -90,26 +100,27 @@ public class LegoRoboter implements Roboter {
 	 */
 	@Override
 	public int findBarrier() {
+		printData();
 		// front = 1
-		if (sample[0] > MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] > MIN_DISTANCE)
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE)
 			return 1;
 		// left = 2
-		if (sample[0] < MIN_DISTANCE && sample[1] > MIN_DISTANCE && sample[2] > MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE)
 			return 2;
 		// right = 3
-		if (sample[0] > MIN_DISTANCE && sample[1] > MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
 			return 3;
 		// front + left = 4
-		if (sample[0] < MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] > MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE)
 			return 4;
 		// front + right = 5
-		if (sample[0] > MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
 			return 5;
 		// left + right = 6
-		if (sample[0] < MIN_DISTANCE && sample[1] > MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
 			return 6;
 		// front + left + right = 7
-		if (sample[0] < MIN_DISTANCE && sample[1] < MIN_DISTANCE && sample[2] < MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
 			return 7;
 		return 0;
 	}
@@ -148,7 +159,7 @@ public class LegoRoboter implements Roboter {
 		if(touched[0] == 0 && touched[1] == 0) {
 			return false;
 		}
-		LCD.drawString("bumped: " + touched[0] + "," + touched[1], 0, 1);
+		System.out.println("bumped");
 		return true;
 	}
 
@@ -165,7 +176,7 @@ public class LegoRoboter implements Roboter {
 		left.forward();
 		right.forward();
 		try {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(3);
 		} catch (InterruptedException e) {
 			// TODO Automatisch generierter Erfassungsblock
 			e.printStackTrace();
@@ -182,7 +193,7 @@ public class LegoRoboter implements Roboter {
 		left.backward();
 		left.backward();
 		try {
-			TimeUnit.SECONDS.sleep(1);
+			TimeUnit.SECONDS.sleep(3);
 		} catch (InterruptedException e) {
 			// TODO Automatisch generierter Erfassungsblock
 			e.printStackTrace();
