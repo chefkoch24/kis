@@ -4,91 +4,333 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
 
 public class Labyrinth {
 	private String mazeFilePath;
 	private String maze;
-	
+	private int mazeX;
+	private int mazeY;
+	private int[] numericMaze;
+
+	// Stringwerte von Labyrinth
+	private final String stringWallValue = "#";
+	private final String stringVoidValue = " ";
+	private final String stringRoboBodyValue = "B";
+	private final String stringRoboHeadValue = "H";
+
 	// Arraywerte für Simulation
-	private final int arrayVoidValue = 0;
-	private final int arrayWallValue = 1;
+	private final int arrayWallValue = 0;
+	private final int arrayVoidValue = 1;
 	private final int arrayRoboBodyValue = 2;
 	private final int arrayRoboHeadValue = 3;
-	
-	private int[][] numericMaze; 
+
+	private final int arrayUnknownSign = -1;
+
+	// Robotermaße (Originalmaße im cm: 20x15 -> auf 4x3 reduziert)
+	private final int robotXDimension = 4;
+	private final int robotYDimension = 3;
+	private final int robotHeadDimension = 1; // Kopf-Schulterproportion passt nicht ganz
 
 	public Labyrinth(String mazeFile) {
-		setMazeFile(mazeFile);
-		updateMaze();
-		mazeToArray();
-		
-		
-//		 BufferedReader br;
-//		try {
-//			br = new BufferedReader(new FileReader(mazeFile));
-//			StringBuilder sb = new StringBuilder();
-//		    String line = br.readLine();
-//		    while (line != null) {
-//		        sb.append(line);
-//		        sb.append(System.lineSeparator());
-//		        line = br.readLine();
-//		    }
-//		    br.close();
-//		    String everything = sb.toString();
-//		    System.out.print(everything);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-	}
-
-	public void mazeToArray(){
-		System.out.println(this.mazeFilePath);		
-		
-		
-	}
-	
-	public void updateMaze() {
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new FileReader(this.mazeFilePath));
-			
+			br = new BufferedReader(new FileReader(mazeFile));
+			this.mazeFilePath = mazeFile;
+
 			StringBuilder sb = new StringBuilder();
 			String line = "";
-			while((line = br.readLine()) != null) {
+			while ((line = br.readLine()) != null) {
 				sb.append(line);
 				sb.append(System.lineSeparator());
 			}
 			br.close();
-			
+
 			this.maze = sb.toString();
-		} catch(IOException e) {
+
+			String[] mazeStringParts = this.maze.split(System.lineSeparator());
+			this.mazeX = mazeStringParts[0].length();
+			this.mazeY = mazeStringParts.length;
+		} catch (FileNotFoundException e) {
+			System.err.println("Datei: " + mazeFile + " nicht gefunden!");
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		mazeToArray();
+	}
+
+	public void mazeToArray() {
+		String[] mazeStringParts = this.maze.split(System.lineSeparator());
+		int[] mazeArray = new int[this.mazeX * this.mazeY];
+
+		for (int i = 0; i < mazeStringParts.length; i++) {
+			for (int j = 0; j < mazeStringParts[i].length(); j++) {
+				if (("" + mazeStringParts[i].charAt(j)).equals(this.stringWallValue)) {
+					mazeArray[i * this.mazeY + j] = this.arrayWallValue;
+				} else if (("" + mazeStringParts[i].charAt(j)).equals(this.stringVoidValue)) {
+					mazeArray[i * this.mazeY + j] = this.arrayVoidValue;
+				} else if (("" + mazeStringParts[i].charAt(j)).equals(this.stringRoboBodyValue)) {
+					mazeArray[i * this.mazeY + j] = this.arrayRoboBodyValue;
+				} else if (("" + mazeStringParts[i].charAt(j)).equals(this.stringRoboHeadValue)) {
+					mazeArray[i * this.mazeY + j] = this.arrayRoboHeadValue;
+				} else {
+					throw new IllegalArgumentException("Ungültiges Zeichen <" + mazeStringParts[i].charAt(j) + ">");
+				}
+			}
+		}
+
+		this.numericMaze = mazeArray;
+	}
+
+	public void printArrayMaze() {
+		for (int i = 0; i < numericMaze.length; i++) {
+			System.out.print(numericMaze[i]);
+			if (i > 0 && (i + 1) % this.mazeX == 0) {
+				System.out.println("");
+			}
 		}
 	}
 
-	public void setMazeFile(String newMazeFile) {
-		FileReader fr;
-		try {
-			fr = new FileReader(newMazeFile);
-			this.mazeFilePath = newMazeFile;
-			fr.close();
-		} catch(FileNotFoundException e){
-			System.err.println("Datei: " + newMazeFile + " nicht gefunden!");
-			e.printStackTrace();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}
+	public void printStringMaze() {
+		updateStringMaze();
+		System.out.println(this.maze);
 	}
-	
-	public String getMaze() {
-		return this.maze;
+
+	public void updateStringMaze() {
+		String newStringMaze = "";
+		for (int i = 0; i < this.numericMaze.length; i++) {
+			if (this.numericMaze[i] == this.arrayWallValue) {
+				newStringMaze += this.stringWallValue;
+			} else if (this.numericMaze[i] == this.arrayVoidValue) {
+				newStringMaze += this.stringVoidValue;
+			} else if (this.numericMaze[i] == this.arrayRoboBodyValue) {
+				newStringMaze += this.stringRoboBodyValue;
+			} else if (this.numericMaze[i] == this.arrayRoboHeadValue) {
+				newStringMaze += this.stringRoboHeadValue;
+			} else {
+				throw new IllegalArgumentException(
+						"Kein entsprechenes Zeichen für: <" + this.numericMaze[i] + "> verfügbar!");
+			}
+
+			if (i > 0 && (i + 1) % this.mazeX == 0) {
+				newStringMaze += System.lineSeparator();
+			}
+		}
+
+		this.maze = newStringMaze;
+	}
+
+	public void puttingRobotIntoTheMaze(int... position) {
+		int puttingPosition = position.length > 0 ? position[0] : 0;
+		// 0 = Norden, weiter im Uhrzeigersinn
+		int headDirection = position.length > 1 ? position[1] : 0;
+
+		List<Integer> possiblePositions = new ArrayList<>();
+		for (int i = 0; i < this.numericMaze.length; i++) {
+			if (this.numericMaze[i] == this.arrayVoidValue) {
+				possiblePositions.add(i);
+			}
+		}
+
+		// Bestimmen der Position und Ausrichtung
+		if (position.length == 0) {
+			puttingPosition = possiblePositions.get(new Random().nextInt(possiblePositions.size()));
+			headDirection = new Random().nextInt(3);
+		} else if (position.length > 0) {
+			Scanner sc = new Scanner(System.in);
+
+			if (!possiblePositions.contains(puttingPosition)) {
+				String input = "";
+				while (!possiblePositions.contains(puttingPosition)) {
+					robotPositionMatrix();
+					System.out.println(puttingPosition + " keine gültige Position, wähle eine gültige.");
+					if (sc.hasNextLine()) {
+						input = sc.nextLine();
+					}
+					try {
+						puttingPosition = Integer.parseInt(input);
+					} catch (NumberFormatException e) {
+						System.out.println("Ungültige Eingabe");
+					}
+				}
+			}
+
+			if (position.length > 1) {
+				if (headDirection < 0 || headDirection > 3) {
+					String input = "";
+					System.out.println("Wähle eine geeignete Ausrichtung");
+					System.out.println("0 = Norden");
+					System.out.println("1 = Osten");
+					System.out.println("2 = Süden");
+					System.out.println("3 = Westen");
+
+					int i = 0;
+					while (headDirection < 0 || headDirection > 3) {
+						if (++i > 1) {
+							System.out.println("Ungültige Ausrichtung");
+						}
+						if (sc.hasNextLine()) {
+							input = sc.nextLine();
+						}
+						try {
+							headDirection = Integer.parseInt(input);
+						} catch (NumberFormatException e) {
+							System.out.println("Ungültige Eingabe");
+						}
+					}
+				}
+			}
+			sc.close();
+		}
+
+		System.out.println("Position: " + puttingPosition);
+		System.out.print("Ausrichtung: ");
+		switch (headDirection) {
+		case 0:
+			System.out.print("Nord");
+			break;
+		case 1:
+			System.out.print("Ost");
+			break;
+		case 2:
+			System.out.print("Süd");
+			break;
+		case 3:
+			System.out.println("West");
+			break;
+		default:
+			throw new IllegalArgumentException("Fehler bei Ausrichtung des Roboters");
+		}
+		System.out.println("");
+
+		// Roboter in Labyrinth setzen
+		List<Integer> possiblePositionsAroundPuttingPosition = new ArrayList<>();
+		possiblePositionsAroundPuttingPosition.add(puttingPosition);
+		int robotSmallerDirection = this.robotXDimension < this.robotYDimension ? this.robotXDimension : this.robotYDimension;
+		boolean wall = false;
+
+		// Nord und Süd (Horizontal ausrichten)
+		if (headDirection == 0 || headDirection == 2) {
+			// Prüfe linke Felder
+			for (int x = 1; !wall && x < robotSmallerDirection; x++) {
+				if (this.numericMaze[puttingPosition - x] == this.arrayVoidValue) {
+					possiblePositionsAroundPuttingPosition.add(puttingPosition - x);
+					System.out.println("links: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+				} else {
+					wall = true;
+				}
+			}
+			// Prüfe rechte Felder
+			if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+				wall = false;
+				for (int x = 1; !wall && x < robotSmallerDirection && possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
+					if (this.numericMaze[puttingPosition + x] == this.arrayVoidValue) {
+						possiblePositionsAroundPuttingPosition.add(puttingPosition + x);
+						System.out.println("rechts: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+					} else {
+						wall = true;
+					}
+				}
+			}
+		} else { // Ost und West (Vertikal aufstellen)
+			// Prüfe oben
+			for(int x = 1; !wall && x < robotSmallerDirection; x++) {
+				if(this.numericMaze[puttingPosition - (x * this.mazeX)] == this.arrayVoidValue) {
+					possiblePositionsAroundPuttingPosition.add(puttingPosition - (x * this.mazeX));
+					System.out.println("oben: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+				} else {
+					wall = true;
+				}
+			}
+			
+			// Prüfe unten
+			if(possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+				wall = false;
+				for(int x = 1; !wall && x < robotSmallerDirection && possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
+					if(this.numericMaze[puttingPosition + (x * this.mazeX)] == this.arrayVoidValue) {
+						possiblePositionsAroundPuttingPosition.add(puttingPosition + (x * this.mazeX));
+						System.out.println("unten: " + possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 1));
+					} else {
+						wall = true;
+					}
+				}
+			}
+		}
+
+		if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+			throw new IllegalArgumentException("Setzen des Roboters auf diese Position nicht möglich");
+		}
+		
+		// Bestimme weitere Felder
+		int biggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension : this.robotYDimension;
+		
+		// Nord und Süd (Vertikal suchen)
+		if(headDirection == 0 || headDirection == 2) {
+			wall = false;
+			int i = 0;
+			// Nach oben
+			for(int y = 1; !wall && y < biggerDirection; y++) {
+				if(this.numericMaze[puttingPosition - (y * this.mazeX)] == this.arrayVoidValue) {
+					i++;
+					if(i == 3) {
+						// Eine mögliche Reihe gefunden
+						i = 0;
+					}
+					possiblePositionsAroundPuttingPosition.add(puttingPosition - (y * this.mazeX));
+				} else {
+					wall = true;
+					while(i > 0) {
+						possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+						i--;
+					}
+				}
+			}
+		} else { // Ost und West (Horizontal suchen)
+			
+		}
+		
+		// Setze Roboter
+		for (int i : possiblePositionsAroundPuttingPosition) {
+			this.numericMaze[i] = this.arrayRoboBodyValue;
+		}
+
+	}
+
+	public void robotPositionMatrix() {
+		for (int i = 0; i < this.numericMaze.length; i++) {
+			if (this.numericMaze[i] == this.arrayWallValue) {
+				for (int j = 0; j < ("" + this.numericMaze.length).length() + 1; j++) {
+					System.out.print(this.stringWallValue);
+				}
+			} else {
+				System.out.print(i);
+				if (("" + i).length() < ("" + this.numericMaze.length).length()) {
+					for (int j = 0; j < ("" + this.numericMaze.length).length() - ("" + i).length(); j++) {
+						System.out.print(" ");
+					}
+				}
+				System.out.print(" ");
+			}
+
+			if (i > 0 && (i + 1) % this.mazeX == 0) {
+				System.out.println();
+			}
+		}
 	}
 
 	public static void main(String[] args) {
 		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
-		// TODO warum Pfad, nicht Labyrinth selbst?
-		l.getMaze();
+		l.printArrayMaze();
+		l.printStringMaze();
+		l.puttingRobotIntoTheMaze(414,0);
+		l.robotPositionMatrix();
+		l.printStringMaze();
 	}
 
 }
