@@ -38,7 +38,7 @@ public class LegoRoboter implements Roboter {
 	private SampleProvider touch2 = touchSensor2.getMode("Touch");
 	private SampleProvider us = distanceSensor.getMode("Distance");
 	private NXTRegulatedMotor throat = Motor.B;
-	
+
 	// one measurement
 	private float[] sample = new float[3];
 //	private float[] sample = new float[3];
@@ -71,9 +71,9 @@ public class LegoRoboter implements Roboter {
 			break;
 		}
 	}
-	
-	private void printData(){
-		for(int i = 0; i < sample.length; i++){
+
+	private void printData() {
+		for (int i = 0; i < sample.length; i++) {
 			System.out.print(sample[i] + ", ");
 		}
 		System.out.println();
@@ -102,55 +102,79 @@ public class LegoRoboter implements Roboter {
 	public int findBarrier() {
 		printData();
 		// front = 1
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE){
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
 			// front + bumped
-			if(isBumped()){
+			if (isBumped()) {
 				return 8;
 			}
 			return 1;
 		}
 		// left = 2
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE){
-			if(isBumped()){
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
+			// left + bumped
+			if (isBumped()) {
 				return 9;
 			}
 			return 2;
 		}
-			
 		// right = 3
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+			// right + bumped
+			if (isBumped()) {
+				return 10;
+			}
 			return 3;
+		}
 		// front + left = 4
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
+			// front + left + bumped
+			if (isBumped()) {
+				return 11;
+			}
 			return 4;
+		}
 		// front + right = 5
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
+		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+			// front + right + bumped
+			if (isBumped()) {
+				return 12;
+			}
 			return 5;
+		}
 		// left + right = 6
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+			// left + right + bumped
+			if (isBumped()) {
+				return 13;
+			}
 			return 6;
+		}
 		// front + left + right = 7
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE)
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+			// front + left + right + bumped
+			if (isBumped()) {
+				return 14;
+			}
 			return 7;
+		}
 		return 0;
 	}
-	
-	public void lookRight(){
+
+	public void lookRight() {
 		throat.setSpeed(SPEED_LOOK);
 		throat.rotate(90);
-		//measure and prints right distance
+		// measure and prints right distance
 		fetchData(2);
 		throat.rotate(-90);
 	}
-	
-	public void lookLeft(){
+
+	public void lookLeft() {
 		throat.setSpeed(SPEED_LOOK);
 		throat.rotate(-90);
-		//measure and prints left distance
+		// measure and prints left distance
 		fetchData(0);
 		throat.rotate(90);
 	}
-
 
 	/**
 	 * measure data from left, front and right
@@ -168,7 +192,7 @@ public class LegoRoboter implements Roboter {
 		touch1.fetchSample(this.touched, 0);
 		touch2.fetchSample(this.touched, 1);
 		// Abfrage Tastsensor
-		if(touched[0] == 0 && touched[1] == 0) {
+		if (touched[0] == 0 && touched[1] == 0) {
 			return false;
 		}
 		System.out.println("bumped");
@@ -195,7 +219,7 @@ public class LegoRoboter implements Roboter {
 		}
 		left.setSpeed(0);
 		right.setSpeed(0);
-		//stop();
+		// stop();
 	}
 
 	@Override
