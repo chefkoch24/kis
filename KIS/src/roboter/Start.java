@@ -16,27 +16,31 @@ public class Start {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		LegoRoboter robot = new LegoRoboter();
+		robot.backward();
+//		robot.left();
 //		robot.forward();
-//		robot.look();
-
+//		robot.right();
+//		for(int i = 0; i< 10; i++){
+//			System.out.println( Math.random() / 10);
+//		}
 //		System.out.println("Finished");
 		/*
 		 * Turn left and turn right missing
 		 */
-		boolean notBumped = true;
-		int i = 0;
-		while (notBumped) {
-			robot.forward();
-			robot.look();
-			notBumped = !robot.isBumped();
-			System.out.println("not bumped");
-			i++;
-		}
+//		boolean notBumped = true;
+//		int i = 0;
+//		while (notBumped) {
+//			robot.forward();
+//			robot.look();
+//			notBumped = !robot.isBumped();
+//			System.out.println("not bumped");
+//			i++;
+//		}
 //		robot.left();
 //		robot.forward();
 //		robot.right();
-		System.out.println("bumped");
-		Button.waitForAnyPress();
+//		System.out.println("bumped");
+//		Button.waitForAnyPress();
 	}
 
 }
