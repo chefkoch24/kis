@@ -36,7 +36,7 @@ public class Labyrinth {
 	private final int robotXDimension = 4;
 	private final int robotYDimension = 3;
 	private final int robotHeadDimension = 1; // Kopf-Schulterproportion passt nicht ganz
-	
+
 	private final int robotSmallerDirection = this.robotXDimension < this.robotYDimension ? this.robotXDimension : this.robotYDimension;
 	private final int robotBiggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension : this.robotYDimension;
 
@@ -118,8 +118,7 @@ public class Labyrinth {
 			} else if (this.numericMaze[i] == this.arrayRoboHeadValue) {
 				newStringMaze += this.stringRoboHeadValue;
 			} else {
-				throw new IllegalArgumentException(
-						"Kein entsprechenes Zeichen für: <" + this.numericMaze[i] + "> verfügbar!");
+				throw new IllegalArgumentException("Kein entsprechenes Zeichen für: <" + this.numericMaze[i] + "> verfügbar!");
 			}
 
 			if (i > 0 && (i + 1) % this.mazeX == 0) {
@@ -145,7 +144,7 @@ public class Labyrinth {
 		// Bestimmen der Position und Ausrichtung
 		if (position.length == 0) {
 			puttingPosition = possiblePositions.get(new Random().nextInt(possiblePositions.size()));
-			headDirection = new Random().nextInt(3);
+			headDirection = new Random().nextInt(4);
 		} else if (position.length > 0) {
 			Scanner sc = new Scanner(System.in);
 
@@ -216,31 +215,24 @@ public class Labyrinth {
 		// Roboter in Labyrinth setzen
 		List<Integer> possiblePositionsAroundPuttingPosition = new ArrayList<>();
 		possiblePositionsAroundPuttingPosition.add(puttingPosition);
-		int robotSmallerDirection = this.robotXDimension < this.robotYDimension ? this.robotXDimension
-				: this.robotYDimension;
 		boolean wall = false;
 
 		// Nord und Süd (Horizontal ausrichten)
 		if (headDirection == 0 || headDirection == 2) {
 			// Prüfe linke Felder
-			for (int x = 1; !wall && x < robotSmallerDirection; x++) {
+			for (int x = 1; !wall && x < this.robotSmallerDirection; x++) {
 				if (this.numericMaze[puttingPosition - x] == this.arrayVoidValue) {
 					possiblePositionsAroundPuttingPosition.add(puttingPosition - x);
-					System.out.println("links: " + possiblePositionsAroundPuttingPosition
-							.get(possiblePositionsAroundPuttingPosition.size() - 1));
 				} else {
 					wall = true;
 				}
 			}
 			// Prüfe rechte Felder
-			if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+			if (possiblePositionsAroundPuttingPosition.size() < this.robotSmallerDirection) {
 				wall = false;
-				for (int x = 1; !wall && x < robotSmallerDirection
-						&& possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
+				for (int x = 1; !wall && x < this.robotSmallerDirection && possiblePositionsAroundPuttingPosition.size() < this.robotSmallerDirection; x++) {
 					if (this.numericMaze[puttingPosition + x] == this.arrayVoidValue) {
 						possiblePositionsAroundPuttingPosition.add(puttingPosition + x);
-						System.out.println("rechts: " + possiblePositionsAroundPuttingPosition
-								.get(possiblePositionsAroundPuttingPosition.size() - 1));
 					} else {
 						wall = true;
 					}
@@ -248,25 +240,20 @@ public class Labyrinth {
 			}
 		} else { // Ost und West (Vertikal aufstellen)
 			// Prüfe oben
-			for (int x = 1; !wall && x < robotSmallerDirection; x++) {
+			for (int x = 1; !wall && x < this.robotSmallerDirection; x++) {
 				if (this.numericMaze[puttingPosition - (x * this.mazeX)] == this.arrayVoidValue) {
 					possiblePositionsAroundPuttingPosition.add(puttingPosition - (x * this.mazeX));
-					System.out.println("oben: " + possiblePositionsAroundPuttingPosition
-							.get(possiblePositionsAroundPuttingPosition.size() - 1));
 				} else {
 					wall = true;
 				}
 			}
 
 			// Prüfe unten
-			if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+			if (possiblePositionsAroundPuttingPosition.size() < this.robotSmallerDirection) {
 				wall = false;
-				for (int x = 1; !wall && x < robotSmallerDirection
-						&& possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection; x++) {
+				for (int x = 1; !wall && x < this.robotSmallerDirection && possiblePositionsAroundPuttingPosition.size() < this.robotSmallerDirection; x++) {
 					if (this.numericMaze[puttingPosition + (x * this.mazeX)] == this.arrayVoidValue) {
 						possiblePositionsAroundPuttingPosition.add(puttingPosition + (x * this.mazeX));
-						System.out.println("unten: " + possiblePositionsAroundPuttingPosition
-								.get(possiblePositionsAroundPuttingPosition.size() - 1));
 					} else {
 						wall = true;
 					}
@@ -274,42 +261,32 @@ public class Labyrinth {
 			}
 		}
 
-		if (possiblePositionsAroundPuttingPosition.size() < robotSmallerDirection) {
+		if (possiblePositionsAroundPuttingPosition.size() < this.robotSmallerDirection) {
 			throw new IllegalArgumentException("Setzen des Roboters auf diese Position nicht möglich");
 		}
 
 		// Bestimme weitere Felder
-		int roboBiggerDirection = this.robotXDimension > this.robotYDimension ? this.robotXDimension
-				: this.robotYDimension;
-
 		// Nord und Süd (Vertikal suchen)
 		if (headDirection == 0 || headDirection == 2) {
 			wall = false;
 			int i = 0;
 			// Nach oben
-			for (int y = 1; !wall && y < roboBiggerDirection; y++) {
-				if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(y)
-						- (y * this.mazeX)] == this.arrayVoidValue) {
+			for (int y = 1; !wall && y < this.robotBiggerDirection; y++) {
+				if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) - (y * this.mazeX)] == this.arrayVoidValue) {
 					i++;
-					possiblePositionsAroundPuttingPosition.add(puttingPosition - (y * this.mazeX)); // TODO
-																									// puttingPosition
-																									// in possible...
-																									// tauschen?
-					for (int x = 1; !wall && x < robotSmallerDirection; x++) {
-						if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(x)
-								- (y * this.mazeX)] == this.arrayVoidValue) {
+					possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) - (y * this.mazeX));
+					for (int x = 1; !wall && x < this.robotSmallerDirection; x++) {
+						if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(x) - (y * this.mazeX)] == this.arrayVoidValue) {
 							i++;
 							// Mögliche Reihe gefunden
 							if (i == 3) {
 								i = 0;
 							}
-							possiblePositionsAroundPuttingPosition
-									.add(possiblePositionsAroundPuttingPosition.get(x) - (y * this.mazeX));
+							possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(x) - (y * this.mazeX));
 						} else {
 							wall = true;
 							while (i > 0) {
-								possiblePositionsAroundPuttingPosition
-										.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+								possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 								i--;
 							}
 						}
@@ -317,8 +294,7 @@ public class Labyrinth {
 				} else {
 					wall = true;
 					while (i > 0) {
-						possiblePositionsAroundPuttingPosition
-								.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+						possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 						i--;
 					}
 				}
@@ -329,24 +305,18 @@ public class Labyrinth {
 				wall = false;
 				i = 0;
 
-				for (int y = 1; !wall && y < roboBiggerDirection && possiblePositionsAroundPuttingPosition
-						.size() < this.robotXDimension * this.robotYDimension; y++) {
-					if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(0)
-							+ (y * this.mazeX)] == this.arrayVoidValue) {
+				for (int y = 1; !wall && y < this.robotBiggerDirection && possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension; y++) {
+					if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) + (y * this.mazeX)] == this.arrayVoidValue) {
 						i++;
-						possiblePositionsAroundPuttingPosition
-								.add(possiblePositionsAroundPuttingPosition.get(0) + (y * this.mazeX));
-						for (int x = 1; !wall && x < robotSmallerDirection; x++) {
-							if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(x)
-									+ (y * this.mazeX)] == this.arrayVoidValue) {
+						possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) + (y * this.mazeX));
+						for (int x = 1; !wall && x < this.robotSmallerDirection; x++) {
+							if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(x) + (y * this.mazeX)] == this.arrayVoidValue) {
 								i++;
-								possiblePositionsAroundPuttingPosition
-										.add(possiblePositionsAroundPuttingPosition.get(x) + (y * this.mazeX));
+								possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(x) + (y * this.mazeX));
 							} else {
 								wall = true;
 								while (i > 0) {
-									possiblePositionsAroundPuttingPosition
-											.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+									possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 									i--;
 								}
 							}
@@ -354,8 +324,7 @@ public class Labyrinth {
 					} else {
 						wall = true;
 						while (i > 0) {
-							possiblePositionsAroundPuttingPosition
-									.remove(possiblePositionsAroundPuttingPosition.size() - 1);
+							possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 							i--;
 						}
 					}
@@ -369,25 +338,23 @@ public class Labyrinth {
 		} else { // Ost und West (Horizontal suchen)
 			wall = false;
 			int i = 0;
-			
+
 			// Links nach freien Plätzen suchen
-			for(int x = 1; !wall && x < this.robotBiggerDirection; x++) {
-				if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) - x] == this.arrayVoidValue) {
+			for (int x = 1; !wall && x < this.robotBiggerDirection; x++) {
+				if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) - x] == this.arrayVoidValue) {
 					i++;
 					possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) - x);
-					System.out.println("x: " + x + " v: " + (possiblePositionsAroundPuttingPosition.get(0) - x));
-					for(int y = 1; !wall && y < this.robotSmallerDirection; y++) {
-						if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(y) - x] == this.arrayVoidValue) {
+					for (int y = 1; !wall && y < this.robotSmallerDirection; y++) {
+						if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(y) - x] == this.arrayVoidValue) {
 							i++;
 							possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(y) - x);
-							System.out.println("y: " + y + "v: " + (possiblePositionsAroundPuttingPosition.get(y) - x));
 							// Passende 3er Gruppe gefunden
-							if(i == 3) {
+							if (i == 3) {
 								i = 0;
 							}
 						} else {
 							wall = true;
-							while(i > 0) {
+							while (i > 0) {
 								possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 								i--;
 							}
@@ -395,33 +362,32 @@ public class Labyrinth {
 					}
 				} else {
 					wall = true;
-					while(i > 0) {
+					while (i > 0) {
 						possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 						i--;
 					}
 				}
 			}
-			
-			// TODO Nach rehcts Bugged noch
-			if(possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension) {
+
+			if (possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension) {
 				// Rechts nach freien Plätzen suchen
 				wall = false;
 				i = 0;
-				for(int x = 1; !wall && x < this.robotBiggerDirection && possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension; x++) {
-					if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) + x] == this.arrayVoidValue) {
+				for (int x = 1; !wall && x < this.robotBiggerDirection && possiblePositionsAroundPuttingPosition.size() < this.robotXDimension * this.robotYDimension; x++) {
+					if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(0) + x] == this.arrayVoidValue) {
 						i++;
-						possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) - x);
-						for(int y = 1; !wall && y < this.robotBiggerDirection; y++) {
-							if(this.numericMaze[possiblePositionsAroundPuttingPosition.get(y) + x] == this.arrayVoidValue) {
+						possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(0) + x);
+						for (int y = 1; !wall && y < this.robotSmallerDirection; y++) {
+							if (this.numericMaze[possiblePositionsAroundPuttingPosition.get(y) + x] == this.arrayVoidValue) {
 								i++;
 								possiblePositionsAroundPuttingPosition.add(possiblePositionsAroundPuttingPosition.get(y) + x);
 								// Mögliche 3er Gruppe gefunden
-								if(i == 3) {
+								if (i == 3) {
 									i = 0;
 								}
 							} else {
 								wall = true;
-								while(i > 0) {
+								while (i > 0) {
 									possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 									i--;
 								}
@@ -429,7 +395,7 @@ public class Labyrinth {
 						}
 					} else {
 						wall = true;
-						while(i > 0) {
+						while (i > 0) {
 							possiblePositionsAroundPuttingPosition.remove(possiblePositionsAroundPuttingPosition.size() - 1);
 							i--;
 						}
@@ -450,11 +416,17 @@ public class Labyrinth {
 		case 0:
 			headPosition = possiblePositionsAroundPuttingPosition.get(1);
 			break;
+		case 1:
+			headPosition = possiblePositionsAroundPuttingPosition.get(this.robotXDimension * this.robotYDimension - this.robotXDimension - 1);
+			break;
 		case 2:
 			headPosition = possiblePositionsAroundPuttingPosition.get(possiblePositionsAroundPuttingPosition.size() - 2);
 			break;
+		case 3:
+			headPosition = possiblePositionsAroundPuttingPosition.get(this.robotXDimension * this.robotYDimension - this.robotXDimension - this.robotYDimension - 1);
+			break;
 		}
-		
+
 		this.numericMaze[headPosition] = this.arrayRoboHeadValue;
 
 	}
@@ -483,10 +455,8 @@ public class Labyrinth {
 
 	public static void main(String[] args) {
 		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
-		l.printArrayMaze();
-		l.printStringMaze();
-		l.puttingRobotIntoTheMaze(433, 1);
 		l.robotPositionMatrix();
+		l.puttingRobotIntoTheMaze();
 		l.printStringMaze();
 	}
 
