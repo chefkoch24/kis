@@ -1,6 +1,9 @@
 package roboter;
 
+import java.nio.ReadOnlyBufferException;
+
 import algorithmus.QLearningAgent;
+import lejos.hardware.Button;
 
 public class Main {
 
@@ -10,14 +13,14 @@ public class Main {
 		QLearningAgent agent = new QLearningAgent();
 		/**
 		 * Rückwärtsfahren keine Sensorik hinten
-		 * links/ rechts hinten rausdrehen?
-		 * status abhängig von bumped?
 		 * 
 		 */
 		LegoRoboter robot = new LegoRoboter();
 		int counter = 0;
-		int treshold = 100;
-		while(counter < treshold) {
+		int treshold = 1000;
+		// counter < treshold && 
+		//Button.readButtons() != 0
+		while(Button.readButtons() == 0) {
 			counter++;
 			robot.look(); // watch and measure data
 			int s = robot.findBarrier(); // find the position of the barrier
@@ -34,12 +37,15 @@ public class Main {
 			// if robot are not moving
 			if(a == 0)
 				r = -1;
+			if(a == 4)
+				r = -1;
 //			if(robot.isGoal())
 //				r = 1;
 			agent.learn(s, sNext, a, r);
 			s = sNext;
 			System.out.println("Reward: " + r);
 			System.out.println("Durchlauf: " + counter);
+//			buttonId = Button.waitForAnyEvent();
 		}
 	}
 
