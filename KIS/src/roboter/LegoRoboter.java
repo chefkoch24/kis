@@ -28,7 +28,7 @@ public class LegoRoboter implements Roboter {
 	private final int LEFT = 0;
 	private final int FRONT = 1;
 	private final int RIGHT = 2;
-	private final double MIN_DISTANCE = 0.1;
+	private final double MIN_DISTANCE = 0.15;
 	private NXTRegulatedMotor left = Motor.D;
 	private NXTRegulatedMotor right = Motor.A;
 	private SensorModes distanceSensor = new EV3UltrasonicSensor(SensorPort.S3);
