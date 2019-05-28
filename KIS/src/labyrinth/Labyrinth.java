@@ -11,12 +11,19 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import roboter.LegoRoboter;
+import roboter.SimRoboter;
+
+// TODO: Roboterposition von Labyrinth trennen
+// TODO: Ausgabe überladene Funktion -> Ohne Parameter nur Lab, mit Param -> Roboter (Param = Roboposition Array)
+// TODO: Lab kennt Pos von Roboter
+// TODO: Lab braucht nur Methode isBumped und getDistanze (entspr. findBarrier von LegoRoboter)
 public class Labyrinth {
 	private String mazeFilePath;
 	private String maze;
 	private int mazeX;
 	private int mazeY;
-	private int[] numericMaze;
+	private int[] numericMaze;	
 
 	// Stringwerte von Labyrinth
 	private final String stringWallValue = "#";
@@ -129,7 +136,7 @@ public class Labyrinth {
 		this.maze = newStringMaze;
 	}
 
-	public void puttingRobotIntoTheMaze(int... position) {
+	public int[][] getRobotStartingPosition(int... position) {
 		int puttingPosition = position.length > 0 ? position[0] : 0;
 		// 0 = Norden, weiter im Uhrzeigersinn
 		int headDirection = position.length > 1 ? position[1] : 0;
@@ -409,7 +416,7 @@ public class Labyrinth {
 			this.numericMaze[i] = this.arrayRoboBodyValue;
 		}
 
-		// Sortieren um leichter zu positionieren
+		// Sortieren um leichter Headposition zu finden
 		Collections.sort(possiblePositionsAroundPuttingPosition);
 		int headPosition = 0;
 		switch (headDirection) {
@@ -427,8 +434,17 @@ public class Labyrinth {
 			break;
 		}
 
-		this.numericMaze[headPosition] = this.arrayRoboHeadValue;
-
+		// this.numericMaze[headPosition] = this.arrayRoboHeadValue;
+		int[][] ret = new int[2][possiblePositionsAroundPuttingPosition.size()];
+		ret[0][0] = headPosition;
+		
+		int index = 0;
+		for(int i : possiblePositionsAroundPuttingPosition) {
+			ret[1][index] = i;
+			index++;
+		}
+		
+		return ret;
 	}
 
 	public void robotPositionMatrix() {
@@ -455,9 +471,18 @@ public class Labyrinth {
 
 	public static void main(String[] args) {
 		Labyrinth l = new Labyrinth("./src/labyrinth/maze1.txt");
+		int[][] position = l.getRobotStartingPosition();
+		SimRoboter r = new SimRoboter(position[0][0], position[1]);
+		System.out.println(r.getHeadPosition());
+		for(int i : position[1]) {
+			System.out.print(i + " ");
+		}
+		System.out.println("");
+		
 		l.robotPositionMatrix();
-		l.puttingRobotIntoTheMaze();
+		
 		l.printStringMaze();
+		
 	}
 
 }
