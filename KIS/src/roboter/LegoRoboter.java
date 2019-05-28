@@ -7,6 +7,7 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.Motor;
 import lejos.hardware.motor.NXTRegulatedMotor;
 import lejos.hardware.port.SensorPort;
+import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3TouchSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
@@ -38,12 +39,15 @@ public class LegoRoboter implements Roboter {
 	private SampleProvider touch2 = touchSensor2.getMode("Touch");
 	private SampleProvider us = distanceSensor.getMode("Distance");
 	private NXTRegulatedMotor throat = Motor.B;
+	private SensorModes colorSensor = new EV3ColorSensor(SensorPort.S2);
+	private SampleProvider col = colorSensor.getMode("ColorID");
+	float[] colorData = new float[colorSensor.sampleSize()];
 
 	// one measurement
 	private float[] sample = new float[3];
-//	private float[] sample = new float[3];
+	// private float[] sample = new float[3];
 	// three measurements, one from front, one from left, one from right
-//	private float[][] data = new float[3][sample.length];
+	// private float[][] data = new float[3][sample.length];
 	private float touched[] = new float[2];
 	/*
 	 * TODO: sensor control simulation-algorithm to learn driving parser from
@@ -87,8 +91,8 @@ public class LegoRoboter implements Roboter {
 	@Override
 	public void fetchData(int pos) {
 		us.fetchSample(sample, pos);
-//		data[pos] = sample;
-//		System.out.print(sample[0]);
+		// data[pos] = sample;
+		// System.out.print(sample[0]);
 		touch1.fetchSample(this.touched, 0);
 		touch2.fetchSample(this.touched, 1);
 	}
@@ -201,8 +205,15 @@ public class LegoRoboter implements Roboter {
 
 	@Override
 	public boolean isGoal() {
-		// TODO: implement color sensors
-		return true;
+		col.fetchSample(colorData, 0);
+		int color = (int) colorData[0];
+		// 2 = blau, 0 = rot
+		if (color == 0) {
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	@Override

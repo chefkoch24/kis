@@ -31,16 +31,13 @@ public class Main {
 			int r = 0;
 			if(robot.isBumped())
 				r = -10;
-			else{
-				r = 1;
-			}
 			// if robot are not moving
 			if(a == 0)
 				r = -1;
 			if(a == 4)
 				r = -1;
-//			if(robot.isGoal())
-//				r = 1;
+			if(robot.isGoal())
+				r = 1;
 			agent.learn(s, sNext, a, r);
 			s = sNext;
 			System.out.println("Reward: " + r);
