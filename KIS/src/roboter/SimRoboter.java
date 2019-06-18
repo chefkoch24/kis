@@ -105,12 +105,6 @@ public class SimRoboter implements Roboter {
 
 	}
 
-	@Override
-	public void stop() {
-		// TODO Auto-generated method stub
-
-	}
-
 	// @Override
 	// public void doAction(int action) {
 	// switch (action) {

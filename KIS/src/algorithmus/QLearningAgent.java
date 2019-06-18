@@ -8,10 +8,10 @@ public class QLearningAgent {
 	private double alpha = 0.01; // Lernrate (0..1)
 	private double gamma = 0.9; // Bewertungsfaktor (0..1)
 	private double q[][]; // Q-Learning-Array
-	private static final int POSSIBLE_ACTIONS = 5;
+	private static final int POSSIBLE_ACTIONS = 4;
 	/*
-	 * possible actions: STOP = 0, DRIVE_FORWARD = 1, DRIVE_LEFT = 2,
-	 * DRIVE_RIGHT = 3, DRIVE_BACKWARD = 4, LOOK = 5 -> aktuell nicht
+	 * possible actions: DRIVE_FORWARD = 0, DRIVE_LEFT = 1,
+	 * DRIVE_RIGHT = 2, DRIVE_BACKWARD = 3
 	 */
 	private static final int BARRIER_LOCATIONS = 8;
 	// is the robot bumped or not? 1 state for the barrier bumped and one state for the location not bumped

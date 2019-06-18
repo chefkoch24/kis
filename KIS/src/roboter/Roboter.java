@@ -12,6 +12,5 @@ public interface Roboter {
 	public void backward();
 	public void left();
 	public void right();
-	public void stop();
 
 }

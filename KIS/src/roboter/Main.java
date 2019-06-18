@@ -18,9 +18,10 @@ public class Main {
 		LegoRoboter robot = new LegoRoboter();
 		int counter = 0;
 		int treshold = 1000;
+		int r = 0;
 		// counter < treshold && 
 		//Button.readButtons() != 0
-		while(Button.readButtons() == 0) {
+		while(Button.readButtons() == 0 && r!= 1) {
 			counter++;
 			robot.look(); // watch and measure data
 			int s = robot.findBarrier(); // find the position of the barrier
@@ -28,13 +29,9 @@ public class Main {
 			robot.doAction(a);
 			int sNext = robot.findBarrier();
 			System.out.println(sNext);// find next state
-			int r = 0;
 			if(robot.isBumped())
-				r = -10;
-			// if robot are not moving
-			if(a == 0)
 				r = -1;
-			if(a == 4)
+			if(a == 3)
 				r = -1;
 			if(robot.isGoal())
 				r = 1;

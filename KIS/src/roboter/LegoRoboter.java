@@ -16,12 +16,10 @@ import lejos.utility.Delay;
 
 public class LegoRoboter implements Roboter {
 
-	private final int STOP = 0;
-	private final int DRIVE_FORWARD = 1;
-	private final int DRIVE_LEFT = 2;
-	private final int DRIVE_RIGHT = 3;
-	private final int DRIVE_BACKWARD = 4;
-	private final int LOOK = 5;
+	private final int DRIVE_FORWARD = 0;
+	private final int DRIVE_LEFT = 1;
+	private final int DRIVE_RIGHT = 2;
+	private final int DRIVE_BACKWARD = 3;
 
 	private final int SPEED = 100;
 	private final int SPEED_CURVE = 0;
@@ -58,9 +56,6 @@ public class LegoRoboter implements Roboter {
 	@Override
 	public void doAction(int action) {
 		switch (action) {
-		case STOP:
-			this.stop();
-			break;
 		case DRIVE_FORWARD:
 			this.forward();
 			break;
@@ -207,7 +202,8 @@ public class LegoRoboter implements Roboter {
 	public boolean isGoal() {
 		col.fetchSample(colorData, 0);
 		int color = (int) colorData[0];
-		// 2 = blau, 0 = rot
+		System.out.println(color);
+		// 2 = blau, 0 = rot , 7=schwarz
 		if (color == 0) {
 			return true;
 		} else {
@@ -261,10 +257,10 @@ public class LegoRoboter implements Roboter {
 		right.rotate(360);
 	}
 
-	@Override
+	/*@Override
 	public void stop() {
 		left.stop();
 		right.stop();
-	}
+	}*/
 
 }
