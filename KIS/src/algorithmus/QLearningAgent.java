@@ -20,7 +20,7 @@ public class QLearningAgent {
 	private static final int BARRIER_LOCATIONS = 8;
 	// is the robot bumped or not? 1 state for the barrier bumped and one state for the location not bumped
 	// dhort of no barrier
-	private static final int BUMPED = 6;
+	private static final int BUMPED = 0;
 	/*
 	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
 	 */
@@ -37,50 +37,9 @@ public class QLearningAgent {
 		printQTable();
 	}
 	
-	public QLearningAgent(boolean trainedQTable) {
-		if(trainedQTable) {
-			this.q = new double [][]{
-				{1,0,0,0},
-				{0,0,0,1},
-				{1,0,0.5,0},
-				{1,0.5,0,0},
-				{0,0,1,0},
-				{0,1,0,0},
-				{1,0,0,0.5},
-				{0,0,0,1},
-				{0,0,0,1},
-				{0,0,0,1},
-				{0,0,0,1},
-				{0,0,0,1},
-				{0,0,0,1},
-				{0,0,0,1},
-				{0,0,0,1}};
-		}
+	public QLearningAgent(double [][] array) {
+		this.q = array;
 		printQTable();
-		
-		/*this.q = new double[BARRIER_LOCATIONS+BUMPED][POSSIBLE_ACTIONS];
-		BufferedReader br;
-		try {
-			br = new BufferedReader(new FileReader(file));
-			StringBuilder sb = new StringBuilder();
-			String line = "";
-			while ((line = br.readLine()) != null) {
-				System.out.println(line);
-				sb.append(line);
-				sb.append(System.lineSeparator());
-			}
-			String string = sb.toString();
-			float f = Float.parseFloat(string.split(""));
-			
-			System.out.println("float:" + f);
-			br.close();
-			System.out.println(sb);
-		} catch (FileNotFoundException e) {
-			System.err.println("Datei: " + file + " nicht gefunden!");
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
 	}
 	
 	private void printQTable() {

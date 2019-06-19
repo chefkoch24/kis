@@ -13,16 +13,43 @@ public class Start {
 	 * wissenschaftliche Arbeiten, die sich mit diesem Thema besch�ftigt haben.
 	 * 
 	 * @param args
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
 //		LegoRoboter robot = new LegoRoboter();
 //		while(Button.readButtons() == 0){
 //			System.out.println(robot.isGoal());
 //		}
-		QLearningAgent q = new QLearningAgent(true);
-		QLearningAgent qa = new QLearningAgent();
-		
+//		double[][] q = new double[][] { 
+//			{ 1, 0, 0, 0 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 1, 0, 0.5, 0 }, 
+//			{ 1, 0.5, 0, 0 },
+//			{ 0, 0, 1, 0 }, 
+//			{ 0, 1, 0, 0 }, 
+//			{ 1, 0, 0, 0.5 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 0, 0, 0, 1 },
+//			{ 0, 0, 0, 1 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 0, 0, 0, 1 } 
+//			};
+		double[][] q = new double[][] { 
+			{ 1, 0, 0, 0 }, 
+			{ 0, 0, 0, 1 }, 
+			{ 1, 0, 0.5, 0 }, 
+			{ 1, 0.5, 0, 0 },
+			{ 0, 0, 1, 0 }, 
+			{ 0, 1, 0, 0 }, 
+			{ 1, 0, 0, 0.5 }, 
+			{ 0, 0, 0, 1 }
+		};
+		QLearningAgent qa1 = new QLearningAgent(q);
+		QLearningAgent qa2 = new QLearningAgent();
+
 //		robot.backward();
 //		robot.left();
 //		robot.forward();
