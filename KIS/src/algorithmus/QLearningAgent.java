@@ -1,5 +1,9 @@
 package algorithmus;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class QLearningAgent {
@@ -16,19 +20,75 @@ public class QLearningAgent {
 	private static final int BARRIER_LOCATIONS = 8;
 	// is the robot bumped or not? 1 state for the barrier bumped and one state for the location not bumped
 	// dhort of no barrier
-	private static final int BUMPED = 7;
+	private static final int BUMPED = 6;
 	/*
 	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
 	 */
 	
 	public QLearningAgent() {
-		this.q = new double[BARRIER_LOCATIONS*BUMPED][POSSIBLE_ACTIONS];
+		this.q = new double[BARRIER_LOCATIONS+BUMPED][POSSIBLE_ACTIONS];
 		// initalize q
 		for(int i = 0; i < this.q.length; i++) {
 			for(int j=0; j < this.q[i].length; j++) {
 				// values between 0 and 0.1 without 0.1
 				this.q[i][j] = Math.random() / 10;
 			}
+		}
+		printQTable();
+	}
+	
+	public QLearningAgent(boolean trainedQTable) {
+		if(trainedQTable) {
+			this.q = new double [][]{
+				{1,0,0,0},
+				{0,0,0,1},
+				{1,0,0.5,0},
+				{1,0.5,0,0},
+				{0,0,1,0},
+				{0,1,0,0},
+				{1,0,0,0.5},
+				{0,0,0,1},
+				{0,0,0,1},
+				{0,0,0,1},
+				{0,0,0,1},
+				{0,0,0,1},
+				{0,0,0,1},
+				{0,0,0,1},
+				{0,0,0,1}};
+		}
+		printQTable();
+		
+		/*this.q = new double[BARRIER_LOCATIONS+BUMPED][POSSIBLE_ACTIONS];
+		BufferedReader br;
+		try {
+			br = new BufferedReader(new FileReader(file));
+			StringBuilder sb = new StringBuilder();
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				System.out.println(line);
+				sb.append(line);
+				sb.append(System.lineSeparator());
+			}
+			String string = sb.toString();
+			float f = Float.parseFloat(string.split(""));
+			
+			System.out.println("float:" + f);
+			br.close();
+			System.out.println(sb);
+		} catch (FileNotFoundException e) {
+			System.err.println("Datei: " + file + " nicht gefunden!");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}*/
+	}
+	
+	private void printQTable() {
+		for (int i = 0; i < BARRIER_LOCATIONS+BUMPED; i++) {
+			for (int j=0; j < POSSIBLE_ACTIONS; j++) {
+				System.out.print(this.q[i][j] + ",");
+			}
+			System.out.println();
 		}
 	}
 
@@ -42,7 +102,6 @@ public class QLearningAgent {
 	 */
 	public void learn(int s, int s_next, int a, double r) {
 		this.q[s][a] += this.alpha * (r + this.gamma * (this.q[s_next][actionWithBestRating(s_next)]) - q[s][a]);
-
 	}
 
 	/**

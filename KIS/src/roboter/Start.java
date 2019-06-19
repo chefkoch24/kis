@@ -2,23 +2,26 @@ package roboter;
 
 import java.util.concurrent.TimeUnit;
 
+import algorithmus.QLearningAgent;
 import lejos.hardware.Button;
 
 public class Start {
 
 	/**
 	 * 4 - 8 Seiten Wissenschaftliche Ausarbeitung Mit Abstract, Einleitung,
-	 * Auswertung der Versuche, Diskussion, Ausblick Mögliche ähnliche
-	 * wissenschaftliche Arbeiten, die sich mit diesem Thema beschäftigt haben.
+	 * Auswertung der Versuche, Diskussion, Ausblick Mï¿½gliche ï¿½hnliche
+	 * wissenschaftliche Arbeiten, die sich mit diesem Thema beschï¿½ftigt haben.
 	 * 
 	 * @param args
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws InterruptedException {
-		LegoRoboter robot = new LegoRoboter();
-		while(Button.readButtons() == 0){
-			System.out.println(robot.isGoal());
-		}
+//		LegoRoboter robot = new LegoRoboter();
+//		while(Button.readButtons() == 0){
+//			System.out.println(robot.isGoal());
+//		}
+		QLearningAgent q = new QLearningAgent(true);
+		QLearningAgent qa = new QLearningAgent();
 		
 //		robot.backward();
 //		robot.left();

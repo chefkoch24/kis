@@ -12,7 +12,7 @@ public class Main {
 		
 		QLearningAgent agent = new QLearningAgent();
 		/**
-		 * Rückwärtsfahren keine Sensorik hinten
+		 * Rï¿½ckwï¿½rtsfahren keine Sensorik hinten
 		 * 
 		 */
 		LegoRoboter robot = new LegoRoboter();
@@ -31,8 +31,8 @@ public class Main {
 			System.out.println(sNext);// find next state
 			if(robot.isBumped())
 				r = -1;
-			if(a == 3)
-				r = -1;
+//			if(a == 3)
+//				r = -1;
 			if(robot.isGoal())
 				r = 1;
 			agent.learn(s, sNext, a, r);
