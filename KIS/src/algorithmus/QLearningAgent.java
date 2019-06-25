@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class QLearningAgent {
 
-	private double epsilon = 0.1;
+	private double epsilon = 0.2;
 	private double alpha = 0.01; // Lernrate (0..1)
 	private double gamma = 0.9; // Bewertungsfaktor (0..1)
 	private double q[][]; // Q-Learning-Array
@@ -20,7 +20,7 @@ public class QLearningAgent {
 	private static final int BARRIER_LOCATIONS = 8;
 	// is the robot bumped or not? 1 state for the barrier bumped and one state for the location not bumped
 	// dhort of no barrier
-	private static final int BUMPED = 0;
+	private static final int BUMPED = 7;
 	/*
 	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
 	 */
@@ -34,12 +34,12 @@ public class QLearningAgent {
 				this.q[i][j] = Math.random() / 10;
 			}
 		}
-		printQTable();
+//		printQTable();
 	}
 	
 	public QLearningAgent(double [][] array) {
 		this.q = array;
-		printQTable();
+//		printQTable();
 	}
 	
 	private void printQTable() {

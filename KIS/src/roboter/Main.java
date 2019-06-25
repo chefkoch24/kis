@@ -10,7 +10,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		
-		QLearningAgent agent = new QLearningAgent();
+//		QLearningAgent agent = new QLearningAgent();
 //		double[][] q = new double[][] { 
 //			{ 1, 0, 0, 0 }, 
 //			{ 0, 0, 0, 1 }, 
@@ -21,7 +21,28 @@ public class Main {
 //			{ 1, 0, 0, 0.5 }, 
 //			{ 0, 0, 0, 1 }
 //		};
-//		QLearningAgent agent = new QLearningAgent(q);
+		/*
+		 * Idee:
+		 * immer links und rechts kein Hinderniss, auch in diese Richtung fahren
+		 */
+		double[][] q = new double[][] { 
+		{ 1, 0, 0, 0 }, 
+		{ 0, 1, 1, 0 }, 
+		{ 1, 0, 0.5, 0 }, 
+		{ 1, 0.5, 0, 0 },
+		{ 0, 0, 1, 0 }, 
+		{ 0, 1, 0, 0 }, 
+		{ 1, 0, 0, 0.5 }, 
+		{ 0, 0, 0, 1 }, 
+		{ 0, 0, 0, 1 }, 
+		{ 0, 0, 0, 1 },
+		{ 0, 0, 0, 1 }, 
+		{ 0, 0, 0, 1 }, 
+		{ 0, 0, 0, 1 }, 
+		{ 0, 0, 0, 1 }, 
+		{ 0, 0, 0, 1 } 
+		};
+		QLearningAgent agent = new QLearningAgent(q);
 		/**
 		 * R�ckw�rtsfahren keine Sensorik hinten
 		 * 
@@ -29,7 +50,7 @@ public class Main {
 		LegoRoboter robot = new LegoRoboter();
 		int counter = 0;
 		int treshold = 1000;
-		int r = 0;
+		double r = 0;
 		// counter < treshold && 
 		//Button.readButtons() != 0
 		while(Button.readButtons() == 0 && r!= 1) {
@@ -42,8 +63,10 @@ public class Main {
 			System.out.println(sNext);// find next state
 			if(robot.isBumped())
 				r = -1;
-//			if(a == 3)
-//				r = -1;
+			// is not bumped
+			r = 0.5;
+			if(a == 3)
+				r = -0.25;
 			if(robot.isGoal())
 				r = 1;
 			agent.learn(s, sNext, a, r);

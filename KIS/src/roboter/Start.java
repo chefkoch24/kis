@@ -16,7 +16,9 @@ public class Start {
 	 * @throws InterruptedException
 	 */
 	public static void main(String[] args) throws InterruptedException {
-//		LegoRoboter robot = new LegoRoboter();
+		LegoRoboter robot = new LegoRoboter();
+		robot.left();
+		
 //		while(Button.readButtons() == 0){
 //			System.out.println(robot.isGoal());
 //		}
