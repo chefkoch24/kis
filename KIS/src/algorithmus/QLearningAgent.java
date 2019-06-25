@@ -20,7 +20,7 @@ public class QLearningAgent {
 	private static final int BARRIER_LOCATIONS = 8;
 	// is the robot bumped or not? 1 state for the barrier bumped and one state for the location not bumped
 	// dhort of no barrier
-	private static final int BUMPED = 7;
+	private static final int BUMPED = 1;
 	/*
 	 * 8 barrier states: no barrier, front, left, right, front+left, front+right, right+left, front+right+left
 	 */
@@ -72,8 +72,10 @@ public class QLearningAgent {
 		double max = 0;
 		int index = 0;
 		for (int i = 0; i < POSSIBLE_ACTIONS; i++) {
-			if (this.q[s][i] > max) {
-				max = this.q[s][i];
+			if (this.q[s][i] >= max) {
+				// in 50% der Fälle das >= nur ausführen
+				if(Math.random()>=0.5)
+					max = this.q[s][i];
 				index = i;
 			}
 		}

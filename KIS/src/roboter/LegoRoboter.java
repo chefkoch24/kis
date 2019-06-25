@@ -100,60 +100,63 @@ public class LegoRoboter implements Roboter {
 	@Override
 	public int findBarrier() {
 		printData();
+		if (isBumped()) {
+			return 8;
+		}
 		// front = 1
 		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
 			// front + bumped
-			if (isBumped()) {
-				return 8;
-			}
+//			if (isBumped()) {
+//				return 8;
+//			}
 			return 1;
 		}
 		// left = 2
 		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
 			// left + bumped
-			if (isBumped()) {
-				return 9;
-			}
+//			if (isBumped()) {
+//				return 9;
+//			}
 			return 2;
 		}
 		// right = 3
 		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
-			// right + bumped
-			if (isBumped()) {
-				return 10;
-			}
+//			// right + bumped
+//			if (isBumped()) {
+//				return 10;
+//			}
 			return 3;
 		}
 		// front + left = 4
 		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
 			// front + left + bumped
-			if (isBumped()) {
-				return 11;
-			}
+//			if (isBumped()) {
+//				return 11;
+//			}
 			return 4;
 		}
 		// front + right = 5
 		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
 			// front + right + bumped
-			if (isBumped()) {
-				return 12;
-			}
+//			if (isBumped()) {
+//				return 12;
+//			}
 			return 5;
 		}
 		// left + right = 6
 		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
 			// left + right + bumped
-			if (isBumped()) {
-				return 13;
-			}
+//			if (isBumped()) {
+//				return 13;
+//			}
 			return 6;
 		}
 		// front + left + right = 7
 		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
 			// front + left + right + bumped
-			if (isBumped()) {
-				return 14;
-			}
+//			if (isBumped()) {
+//				return 14;
+//			}
 			return 7;
 		}
 		return 0;
