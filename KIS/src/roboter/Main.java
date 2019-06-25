@@ -11,6 +11,17 @@ public class Main {
 		
 		
 		QLearningAgent agent = new QLearningAgent();
+//		double[][] q = new double[][] { 
+//			{ 1, 0, 0, 0 }, 
+//			{ 0, 0, 0, 1 }, 
+//			{ 1, 0, 0.5, 0 }, 
+//			{ 1, 0.5, 0, 0 },
+//			{ 0, 0, 1, 0 }, 
+//			{ 0, 1, 0, 0 }, 
+//			{ 1, 0, 0, 0.5 }, 
+//			{ 0, 0, 0, 1 }
+//		};
+//		QLearningAgent agent = new QLearningAgent(q);
 		/**
 		 * R�ckw�rtsfahren keine Sensorik hinten
 		 * 
