@@ -69,7 +69,7 @@ public class QLearningAgent {
 	 * @return: Gibt die Aktion als int zurück.
 	 */
 	public int actionWithBestRating(int s) {
-		double max = 0;
+		double max = Integer.MIN_VALUE;
 		int index = 0;
 		for (int i = 0; i < POSSIBLE_ACTIONS; i++) {
 			if (this.q[s][i] >= max) {
