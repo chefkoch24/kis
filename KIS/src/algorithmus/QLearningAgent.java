@@ -73,10 +73,11 @@ public class QLearningAgent {
 		int index = 0;
 		for (int i = 0; i < POSSIBLE_ACTIONS; i++) {
 			if (this.q[s][i] >= max) {
-				// in 50% der Fälle das >= nur ausführen
-				if(Math.random()>=0.5)
+				// in 50% der Fï¿½lle das >= nur ausfï¿½hren
+				if(Math.random()>=0.5) {
 					max = this.q[s][i];
-				index = i;
+					index = i;
+				}
 			}
 		}
 		return index;
