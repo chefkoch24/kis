@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class QLearningAgent {
 
-	private double epsilon = 0.2;
+	private double epsilon = 0.1;
 	private double alpha = 0.01; // Lernrate (0..1)
 	private double gamma = 0.9; // Bewertungsfaktor (0..1)
 	private double q[][]; // Q-Learning-Array

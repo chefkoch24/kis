@@ -104,7 +104,7 @@ public class LegoRoboter implements Roboter {
 			return 8;
 		}
 		// front = 1
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
+		if (sample[LEFT] >= MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] >= MIN_DISTANCE) {
 			// front + bumped
 //			if (isBumped()) {
 //				return 8;
@@ -112,7 +112,7 @@ public class LegoRoboter implements Roboter {
 			return 1;
 		}
 		// left = 2
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] >= MIN_DISTANCE && sample[RIGHT] >= MIN_DISTANCE) {
 			// left + bumped
 //			if (isBumped()) {
 //				return 9;
@@ -120,7 +120,7 @@ public class LegoRoboter implements Roboter {
 			return 2;
 		}
 		// right = 3
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+		if (sample[LEFT] >= MIN_DISTANCE && sample[FRONT] >= MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
 //			// right + bumped
 //			if (isBumped()) {
 //				return 10;
@@ -128,7 +128,7 @@ public class LegoRoboter implements Roboter {
 			return 3;
 		}
 		// front + left = 4
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] > MIN_DISTANCE) {
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] >= MIN_DISTANCE) {
 			// front + left + bumped
 //			if (isBumped()) {
 //				return 11;
@@ -136,7 +136,7 @@ public class LegoRoboter implements Roboter {
 			return 4;
 		}
 		// front + right = 5
-		if (sample[LEFT] > MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+		if (sample[LEFT] >= MIN_DISTANCE && sample[FRONT] < MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
 			// front + right + bumped
 //			if (isBumped()) {
 //				return 12;
@@ -144,7 +144,7 @@ public class LegoRoboter implements Roboter {
 			return 5;
 		}
 		// left + right = 6
-		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] > MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
+		if (sample[LEFT] < MIN_DISTANCE && sample[FRONT] >= MIN_DISTANCE && sample[RIGHT] < MIN_DISTANCE) {
 			// left + right + bumped
 //			if (isBumped()) {
 //				return 13;
@@ -205,7 +205,7 @@ public class LegoRoboter implements Roboter {
 	public boolean isGoal() {
 		col.fetchSample(colorData, 0);
 		int color = (int) colorData[0];
-		System.out.println(color);
+		System.out.println("color: " + color);
 		// 2 = blau, 0 = rot , 7=schwarz
 		if (color == 0) {
 			return true;
