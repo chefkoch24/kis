@@ -19,11 +19,11 @@ public class Main {
 		{ 1, 1, 0, 0 },
 		{ 0, 0, 1, 0 }, 
 		{ 0, 1, 0, 0 }, 
-		{ 1, 0, 0, 0.5 }, 
+		{ 1, 0, 0, 1 }, 
 		{ 0, 0, 0, 1 }, 
 		{ 0, 0, 0, 1 }, 
 		};
-//		// Q- Table einfache Lösung
+		// Q- Table einfache Lösung
 //		double[][] q = new double[][] { 
 //			{1.8925222018615637,-1.6720767275781938,-1.3298117361950599,0.7581207530731985},
 //			{-2.2830799720694657,-2.1840289549679994,-1.9823653725869497,-0.8064371074889148},
@@ -58,7 +58,7 @@ public class Main {
 		double r = 0;
 		// counter < treshold && 
 		//Button.readButtons() != 0
-		while(Button.readButtons() == 0){//&& r!= 1) {
+		while(Button.readButtons() == 0 ){//&& r!= 1) {
 			counter++;
 			robot.look(); // watch and measure data
 			int s = robot.findBarrier(); // find the position of the barrier
